@@ -1,0 +1,217 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/contratante/dashboard"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title>Meu Perfil</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="salvarAlteracoes()" fill="clear" [disabled]="perfilForm.invalid || loading">
+        <ion-icon name="save-outline" slot="start"></ion-icon>
+        Salvar
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="perfil-container">
+    <!-- Cabeçalho do perfil -->
+    <div class="perfil-header">
+      <div class="avatar-section">
+        <div class="avatar-container">
+          <ion-avatar class="profile-avatar">
+            <ion-icon name="person-circle-outline"></ion-icon>
+          </ion-avatar>
+          <ion-button fill="clear" class="avatar-edit-btn" (click)="alterarFoto()">
+            <ion-icon name="camera-outline"></ion-icon>
+          </ion-button>
+        </div>
+        <div class="user-basic-info">
+          <h1>{{ usuario?.nome }}</h1>
+          <p class="user-email">{{ usuario?.email }}</p>
+          <p class="user-role">{{ usuario?.funcao }}</p>
+        </div>
+      </div>
+      
+      <div class="stats-badges">
+        <div class="badge">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>{{ estatisticas.totalEventos }} Eventos</span>
+        </div>
+        <div class="badge">
+          <ion-icon name="document-text-outline"></ion-icon>
+          <span>{{ estatisticas.totalContratos }} Contratos</span>
+        </div>
+        <div class="badge">
+          <ion-icon name="calendar-check-outline"></ion-icon>
+          <span>Membro desde {{ formatarData(usuario?.dataCadastro) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulário de edição -->
+    <form [formGroup]="perfilForm" (ngSubmit)="salvarAlteracoes()">
+      <div class="form-sections">
+        <!-- Informações Pessoais -->
+        <div class="form-section">
+          <div class="section-header">
+            <h2><ion-icon name="person-outline"></ion-icon> Informações Pessoais</h2>
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="nome">Nome Completo <span class="required">*</span></label>
+              <ion-input id="nome" formControlName="nome" type="text" placeholder="Seu nome completo"></ion-input>
+              <div class="error-message" *ngIf="perfilForm.get('nome')?.invalid && perfilForm.get('nome')?.touched">
+                Nome é obrigatório
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="email">E-mail <span class="required">*</span></label>
+              <ion-input id="email" formControlName="email" type="email" placeholder="seu@email.com"></ion-input>
+              <div class="error-message" *ngIf="perfilForm.get('email')?.invalid && perfilForm.get('email')?.touched">
+                E-mail inválido
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="dtNascimento">Data de Nascimento <span class="required">*</span></label>
+                <ion-input id="dtNascimento" formControlName="dtNascimento" type="date"></ion-input>
+              </div>
+              
+              <div class="form-group">
+                <label for="telefone">Telefone <span class="required">*</span></label>
+                <ion-input id="telefone" formControlName="telefone" type="tel" 
+                          placeholder="(11) 99999-9999" (ionChange)="formatarTelefone($event)"></ion-input>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alteração de Senha -->
+        <div class="form-section">
+          <div class="section-header">
+            <h2><ion-icon name="lock-closed-outline"></ion-icon> Segurança</h2>
+            <ion-button fill="clear" size="small" (click)="toggleAlterarSenha()">
+              {{ mostrarSenha ? 'Cancelar' : 'Alterar Senha' }}
+            </ion-button>
+          </div>
+          
+          <div class="form-grid" *ngIf="mostrarSenha">
+            <div class="form-group">
+              <label for="senhaAtual">Senha Atual <span class="required">*</span></label>
+              <ion-input id="senhaAtual" formControlName="senhaAtual" 
+                        [type]="mostrarSenhaAtual ? 'text' : 'password'" 
+                        placeholder="Digite sua senha atual">
+                <ion-button fill="clear" slot="end" (click)="toggleMostrarSenha('atual')">
+                  <ion-icon [name]="mostrarSenhaAtual ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+                </ion-button>
+              </ion-input>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="novaSenha">Nova Senha <span class="required">*</span></label>
+                <ion-input id="novaSenha" formControlName="novaSenha" 
+                          [type]="mostrarNovaSenha ? 'text' : 'password'" 
+                          placeholder="Mínimo 6 caracteres">
+                  <ion-button fill="clear" slot="end" (click)="toggleMostrarSenha('nova')">
+                    <ion-icon [name]="mostrarNovaSenha ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+                  </ion-button>
+                </ion-input>
+                <div class="error-message" *ngIf="perfilForm.get('novaSenha')?.invalid && perfilForm.get('novaSenha')?.touched">
+                  Mínimo 6 caracteres
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="confirmarSenha">Confirmar Senha <span class="required">*</span></label>
+                <ion-input id="confirmarSenha" formControlName="confirmarSenha" 
+                          [type]="mostrarConfirmarSenha ? 'text' : 'password'" 
+                          placeholder="Repita a nova senha">
+                  <ion-button fill="clear" slot="end" (click)="toggleMostrarSenha('confirmar')">
+                    <ion-icon [name]="mostrarConfirmarSenha ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+                  </ion-button>
+                </ion-input>
+                <div class="error-message" *ngIf="perfilForm.hasError('senhasNaoCoincidem')">
+                  As senhas não coincidem
+                </div>
+              </div>
+            </div>
+            
+            <div class="senha-requirements">
+              <p><strong>Requisitos da senha:</strong></p>
+              <ul>
+                <li [class.valid]="temMinimoCaracteres">Mínimo 6 caracteres</li>
+                <li [class.valid]="temMaiuscula">Pelo menos uma letra maiúscula</li>
+                <li [class.valid]="temNumero">Pelo menos um número</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dados da Conta -->
+        <div class="form-section">
+          <div class="section-header">
+            <h2><ion-icon name="card-outline"></ion-icon> Dados da Conta</h2>
+          </div>
+          
+          <div class="account-info">
+            <div class="info-item">
+              <span class="info-label">ID do Usuário:</span>
+              <span class="info-value">{{ usuario?.idUsuario }}</span>
+            </div>
+            
+            <div class="info-item">
+              <span class="info-label">Função:</span>
+              <span class="info-value">{{ usuario?.funcao }}</span>
+            </div>
+            
+            <div class="info-item">
+              <span class="info-label">Conta criada em:</span>
+              <span class="info-value">{{ formatarDataHora(usuario?.dataCadastro) }}</span>
+            </div>
+            
+            <div class="info-item">
+              <span class="info-label">Status da Conta:</span>
+              <span class="info-value status-ativo">
+                <ion-icon name="checkmark-circle-outline"></ion-icon>
+                Ativa
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ações da Conta -->
+        <div class="form-section">
+          <div class="section-header">
+            <h2><ion-icon name="settings-outline"></ion-icon> Ações da Conta</h2>
+          </div>
+          
+          <div class="account-actions">        
+            <ion-button expand="block" fill="outline" color="warning" (click)="solicitarExclusaoConta()">
+              <ion-icon name="trash-outline" slot="start"></ion-icon>
+              Solicitar Exclusão da Conta
+            </ion-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botões de ação -->
+      <div class="action-buttons">
+        <ion-button expand="block" color="medium" fill="outline" routerLink="/contratante/dashboard">
+          Cancelar
+        </ion-button>
+        
+        <ion-button expand="block" color="primary" type="submit" [disabled]="perfilForm.invalid || loading">
+          <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+          <span *ngIf="!loading">Salvar Alterações</span>
+        </ion-button>
+      </div>
+    </form>
+  </div>
+</ion-content>

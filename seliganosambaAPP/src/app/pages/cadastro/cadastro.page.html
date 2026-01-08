@@ -1,0 +1,259 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/login"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title>Criar Conta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Logo e título -->
+  <div class="logo-section">
+    <div class="logo-container">
+      <ion-icon name="musical-notes" color="primary" class="logo-icon"></ion-icon>
+      <h1>Se Liga No Samba</h1>
+    </div>
+    <p class="subtitle">Crie sua conta como contratante e agende eventos incríveis</p>
+  </div>
+
+  <!-- Formulário de cadastro -->
+  <div class="form-container">
+    <form [formGroup]="cadastroForm" (ngSubmit)="cadastrar()">
+      
+      <!-- Nome completo -->
+      <div class="form-group">
+        <ion-label position="stacked" color="medium">
+          Nome Completo <span class="required">*</span>
+        </ion-label>
+        <ion-input 
+          formControlName="nome"
+          type="text"
+          placeholder="Digite seu nome completo"
+          clearInput>
+        </ion-input>
+        <div class="error-message" *ngIf="cadastroForm.get('nome')?.invalid && (cadastroForm.get('nome')?.dirty || cadastroForm.get('nome')?.touched)">
+          <small *ngIf="cadastroForm.get('nome')?.errors?.['required']">
+            Nome é obrigatório
+          </small>
+          <small *ngIf="cadastroForm.get('nome')?.errors?.['minlength']">
+            Nome deve ter no mínimo 3 caracteres
+          </small>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <ion-label position="stacked" color="medium">
+          Email <span class="required">*</span>
+        </ion-label>
+        <ion-input 
+          formControlName="email"
+          type="email"
+          placeholder="seu@email.com"
+          clearInput>
+        </ion-input>
+        <div class="error-message" *ngIf="cadastroForm.get('email')?.invalid && (cadastroForm.get('email')?.dirty || cadastroForm.get('email')?.touched)">
+          <small *ngIf="cadastroForm.get('email')?.errors?.['required']">
+            Email é obrigatório
+          </small>
+          <small *ngIf="cadastroForm.get('email')?.errors?.['email']">
+            Digite um email válido
+          </small>
+        </div>
+      </div>
+
+      <!-- Telefone -->
+      <div class="form-group">
+        <ion-label position="stacked" color="medium">
+          Telefone <span class="required">*</span>
+        </ion-label>
+        <ion-input 
+          formControlName="telefone"
+          type="tel"
+          placeholder="(11) 99999-9999"
+          clearInput
+          (ionInput)="formatarTelefone($event)">
+        </ion-input>
+        <div class="error-message" *ngIf="cadastroForm.get('telefone')?.invalid && (cadastroForm.get('telefone')?.dirty || cadastroForm.get('telefone')?.touched)">
+          <small *ngIf="cadastroForm.get('telefone')?.errors?.['required']">
+            Telefone é obrigatório
+          </small>
+          <small *ngIf="cadastroForm.get('telefone')?.errors?.['pattern']">
+            Digite um telefone válido: (DD) 99999-9999
+          </small>
+        </div>
+      </div>
+
+      <!-- Data de Nascimento -->
+      <div class="form-group">
+        <ion-label position="stacked" color="medium">
+          Data de Nascimento <span class="required">*</span>
+        </ion-label>
+        <ion-input 
+          formControlName="dtNascimento"
+          type="date"
+          [max]="dataMaximaNascimento"
+          [min]="dataMinimaNascimento">
+        </ion-input>
+        <div class="error-message" *ngIf="cadastroForm.get('dtNascimento')?.invalid && (cadastroForm.get('dtNascimento')?.dirty || cadastroForm.get('dtNascimento')?.touched)">
+          <small *ngIf="cadastroForm.get('dtNascimento')?.errors?.['required']">
+            Data de nascimento é obrigatória
+          </small>
+        </div>
+      </div>
+
+      <!-- Senha -->
+      <div class="form-group">
+        <ion-label position="stacked" color="medium">
+          Senha <span class="required">*</span>
+        </ion-label>
+        <ion-input 
+          formControlName="senha"
+          [type]="mostrarSenha ? 'text' : 'password'"
+          placeholder="Digite sua senha (mínimo 6 caracteres)"
+          clearInput
+          (ionInput)="validarForcaSenha()">
+          <ion-button fill="clear" slot="end" (click)="toggleMostrarSenha()">
+            <ion-icon [name]="mostrarSenha ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </ion-button>
+        </ion-input>
+        <div class="error-message" *ngIf="cadastroForm.get('senha')?.invalid && (cadastroForm.get('senha')?.dirty || cadastroForm.get('senha')?.touched)">
+          <small *ngIf="cadastroForm.get('senha')?.errors?.['required']">
+            Senha é obrigatória
+          </small>
+          <small *ngIf="cadastroForm.get('senha')?.errors?.['minlength']">
+            Senha deve ter no mínimo 6 caracteres
+          </small>
+        </div>
+        
+        <!-- Indicador de força da senha -->
+        <div class="password-strength" *ngIf="cadastroForm.get('senha')?.value && cadastroForm.get('senha')?.value.length >= 6">
+          <div class="strength-bar">
+            <div class="strength-fill" [ngClass]="forcaSenha"></div>
+          </div>
+          <small class="strength-text">Força da senha: {{ getTextoForcaSenha() }}</small>
+        </div>
+      </div>
+
+      <!-- Confirmação de Senha -->
+      <div class="form-group">
+        <ion-label position="stacked" color="medium">
+          Confirmar Senha <span class="required">*</span>
+        </ion-label>
+        <ion-input 
+          formControlName="confirmarSenha"
+          [type]="mostrarConfirmarSenha ? 'text' : 'password'"
+          placeholder="Digite a senha novamente"
+          clearInput>
+          <ion-button fill="clear" slot="end" (click)="toggleMostrarConfirmarSenha()">
+            <ion-icon [name]="mostrarConfirmarSenha ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </ion-button>
+        </ion-input>
+        <div class="error-message" *ngIf="cadastroForm.get('confirmarSenha')?.invalid && (cadastroForm.get('confirmarSenha')?.dirty || cadastroForm.get('confirmarSenha')?.touched)">
+          <small *ngIf="cadastroForm.get('confirmarSenha')?.errors?.['required']">
+            Confirmação de senha é obrigatória
+          </small>
+          <small *ngIf="cadastroForm.get('confirmarSenha')?.errors?.['senhasNaoConferem']">
+            As senhas não conferem
+          </small>
+        </div>
+      </div>
+
+      <!-- Informação sobre função -->
+      <div class="info-card">
+        <div class="info-header">
+          <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+          <h3>Sua Conta será como Contratante</h3>
+        </div>
+        <p>
+          Ao criar sua conta, você terá acesso como <strong>CONTRATANTE</strong>. 
+          Com esta função você poderá agendar eventos, acompanhar orçamentos 
+          e gerenciar seus contratos.
+        </p>
+      </div>
+
+      <!-- Checkbox de termos -->
+      <div class="form-group termos">
+        <ion-checkbox formControlName="aceitarTermos" slot="start"></ion-checkbox>
+        <ion-label class="termos-text">
+          Concordo com os 
+          <a href="#" (click)="verTermos($event)">Termos de Uso</a> 
+          e 
+          <a href="#" (click)="verPolitica($event)">Política de Privacidade</a>
+          <span class="required">*</span>
+        </ion-label>
+      </div>
+      <div class="error-message" *ngIf="cadastroForm.get('aceitarTermos')?.invalid && (cadastroForm.get('aceitarTermos')?.dirty || cadastroForm.get('aceitarTermos')?.touched)">
+        <small>Você deve aceitar os termos para continuar</small>
+      </div>
+
+      <!-- Botão de cadastro -->
+      <ion-button 
+        expand="block" 
+        type="submit" 
+        color="primary"
+        [disabled]="cadastroForm.invalid || loading">
+        <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+        <span *ngIf="!loading">Criar Conta como Contratante</span>
+      </ion-button>
+
+      <!-- Link para login -->
+      <div class="login-link">
+        <p>
+          Já tem uma conta? 
+          <a routerLink="/login">Faça login</a>
+        </p>
+      </div>
+    </form>
+  </div>
+
+  <!-- Modal de termos -->
+  <div class="modal-overlay" *ngIf="mostrarModalTermos">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Termos de Uso</h2>
+        <ion-button fill="clear" (click)="fecharModalTermos()">
+          <ion-icon name="close-outline"></ion-icon>
+        </ion-button>
+      </div>
+      <div class="modal-body">
+        <h3>1. Aceitação dos Termos</h3>
+        <p>Ao criar uma conta no sistema Se Liga No Samba, você concorda com estes Termos de Uso.</p>
+      </div>
+      <div class="modal-footer">
+        <ion-button expand="block" color="primary" (click)="fecharModalTermos()">
+          Entendi e Concordo
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de política de privacidade -->
+  <div class="modal-overlay" *ngIf="mostrarModalPolitica">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Política de Privacidade</h2>
+        <ion-button fill="clear" (click)="fecharModalPolitica()">
+          <ion-icon name="close-outline"></ion-icon>
+        </ion-button>
+      </div>
+      <div class="modal-body">
+        <h3>1. Coleta de Dados</h3>
+        <p>Coletamos os seguintes dados pessoais:</p>
+        <ul>
+          <li>Nome completo</li>
+          <li>Endereço de email</li>
+          <li>Telefone de contato</li>
+          <li>Data de nascimento</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <ion-button expand="block" color="primary" (click)="fecharModalPolitica()">
+          Entendi
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

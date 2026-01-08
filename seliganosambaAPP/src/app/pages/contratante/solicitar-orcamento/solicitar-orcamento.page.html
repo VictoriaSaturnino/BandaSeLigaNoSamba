@@ -1,0 +1,273 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/contratante/dashboard"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title>Solicitar Orçamento</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="limparFormulario()" fill="clear" color="light">
+        <ion-icon name="refresh-outline" slot="start"></ion-icon>
+        Limpar
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Informações da solicitação -->
+  <div class="info-section">
+    <div class="info-card">
+      <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+      <div class="info-content">
+        <h3>Solicitar Pré-Orçamento</h3>
+        <p>Preencha os dados do seu evento. O produtor enviará uma proposta de orçamento para análise.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulário de solicitação -->
+  <div class="form-section">
+    <div class="form-card">
+      <form #orcamentoForm="ngForm">
+        <div class="form-row">
+          <!-- Nome do Evento -->
+          <div class="form-group">
+            <ion-item>
+              <ion-label position="floating" class="form-label">
+                <ion-icon name="pricetag-outline" slot="start"></ion-icon>
+                Nome do Evento *
+              </ion-label>
+              <ion-input 
+                name="nomeEvento" 
+                [(ngModel)]="form.nomeEvento"
+                required
+                clearInput>
+              </ion-input>
+            </ion-item>
+            <div class="form-hint">Ex: Aniversário, Casamento, Formatura</div>
+          </div>
+
+          <!-- Quantidade de Convidados -->
+          <div class="form-group">
+            <ion-item>
+              <ion-label position="floating" class="form-label">
+                <ion-icon name="people-outline" slot="start"></ion-icon>
+                Quantidade de Convidados *
+              </ion-label>
+              <ion-input 
+                type="number" 
+                name="quantidadeConvidados" 
+                [(ngModel)]="form.quantidadeConvidados"
+                required
+                min="1">
+              </ion-input>
+            </ion-item>
+            <div class="form-hint">Número aproximado de participantes</div>
+          </div>
+        </div>
+
+        <!-- Tipo de Evento -->
+        <div class="form-group">
+          <ion-item>
+            <ion-label class="form-label">
+              <ion-icon name="git-branch-outline" slot="start"></ion-icon>
+              Tipo de Evento *
+            </ion-label>
+            <ion-select 
+              name="tipoEvento" 
+              interface="popover" 
+              [(ngModel)]="form.tipoEvento"
+              required>
+              <ion-select-option value="PUBLICO">Público</ion-select-option>
+              <ion-select-option value="PRIVADO">Privado</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <div class="form-hint">Evento aberto ao público ou privado</div>
+        </div>
+
+        <!-- Localização do Evento -->
+        <div class="section-title">
+          <ion-icon name="location-outline"></ion-icon>
+          <h3>Local do Evento</h3>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <ion-item>
+              <ion-label position="floating" class="form-label">
+                <ion-icon name="navigate-outline" slot="start"></ion-icon>
+                Rua *
+              </ion-label>
+              <ion-input 
+                name="rua" 
+                [(ngModel)]="form.rua"
+                required>
+              </ion-input>
+            </ion-item>
+          </div>
+
+          <div class="form-group">
+            <ion-item>
+              <ion-label position="floating" class="form-label">
+                <ion-icon name="home-outline" slot="start"></ion-icon>
+                Número *
+              </ion-label>
+              <ion-input 
+                name="numero" 
+                [(ngModel)]="form.numero"
+                required>
+              </ion-input>
+            </ion-item>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <ion-item>
+              <ion-label position="floating" class="form-label">
+                <ion-icon name="business-outline" slot="start"></ion-icon>
+                Bairro *
+              </ion-label>
+              <ion-input 
+                name="bairro" 
+                [(ngModel)]="form.bairro"
+                required>
+              </ion-input>
+            </ion-item>
+          </div>
+
+          <div class="form-group">
+            <ion-item>
+              <ion-label position="floating" class="form-label">
+                <ion-icon name="business-outline" slot="start"></ion-icon>
+                Cidade *
+              </ion-label>
+              <ion-input 
+                name="cidade" 
+                [(ngModel)]="form.cidade"
+                required>
+              </ion-input>
+            </ion-item>
+          </div>
+
+          <div class="form-group">
+            <ion-item>
+              <ion-label position="floating" class="form-label">
+                <ion-icon name="flag-outline" slot="start"></ion-icon>
+                Estado *
+              </ion-label>
+              <ion-input 
+                name="estado" 
+                [(ngModel)]="form.estado"
+                required
+                maxlength="2">
+              </ion-input>
+            </ion-item>
+          </div>
+        </div>
+
+        <!-- Data e Hora -->
+        <div class="section-title">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <h3>Data e Hora do Evento</h3>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <ion-item>
+              <ion-label class="form-label">
+                <ion-icon name="calendar-clear-outline" slot="start"></ion-icon>
+                Data do Evento *
+              </ion-label>
+              <ion-datetime 
+                name="dataEvento" 
+                presentation="date" 
+                [(ngModel)]="form.dataEvento"
+                required
+                min="{{ dataMinima | date: 'yyyy-MM-dd' }}">
+              </ion-datetime>
+            </ion-item>
+            <div class="form-hint">Selecione a data do evento</div>
+          </div>
+
+          <div class="form-group">
+            <ion-item>
+              <ion-label class="form-label">
+                <ion-icon name="time-outline" slot="start"></ion-icon>
+                Horário *
+              </ion-label>
+              <ion-datetime 
+                name="horario" 
+                presentation="time" 
+                [(ngModel)]="form.horario"
+                required>
+              </ion-datetime>
+            </ion-item>
+            <div class="form-hint">Horário de início</div>
+          </div>
+        </div>
+
+        <!-- Recursos Disponíveis -->
+        <div class="section-title">
+          <ion-icon name="settings-outline"></ion-icon>
+          <h3>Recursos Disponíveis</h3>
+        </div>
+
+        <div class="form-group">
+          <div class="radio-group">
+            <p class="radio-label">
+              <ion-icon name="volume-high-outline"></ion-icon>
+              Sonorização disponível no local? *
+            </p>
+            
+            <ion-radio-group 
+              name="sonorizacao" 
+              [(ngModel)]="form.sonorizacao"
+              required>
+              
+              <div class="radio-options">
+                <ion-item lines="none">
+                  <ion-label>Sim</ion-label>
+                  <ion-radio slot="end" [value]="true"></ion-radio>
+                </ion-item>
+                
+                <ion-item lines="none">
+                  <ion-label>Não</ion-label>
+                  <ion-radio slot="end" [value]="false"></ion-radio>
+                </ion-item>
+              </div>
+            </ion-radio-group>
+          </div>
+        </div>
+
+        <!-- Botões de ação -->
+        <div class="form-actions">
+          <ion-button 
+            expand="block" 
+            color="primary" 
+            [disabled]="!orcamentoForm.valid || enviando"
+            (click)="enviarPreOrcamento()"
+            class="submit-button">
+            
+            <ion-icon name="paper-plane-outline" slot="start" *ngIf="!enviando"></ion-icon>
+            <ion-icon name="hourglass-outline" slot="start" *ngIf="enviando"></ion-icon>
+            
+            {{ enviando ? 'Enviando...' : 'Enviar Pré-Orçamento' }}
+          </ion-button>
+
+          <ion-button 
+            expand="block" 
+            color="medium" 
+            fill="outline"
+            (click)="limparFormulario()">
+            
+            <ion-icon name="trash-outline" slot="start"></ion-icon>
+            Limpar Formulário
+          </ion-button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ion-content>

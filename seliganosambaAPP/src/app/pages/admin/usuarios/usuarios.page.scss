@@ -1,0 +1,256 @@
+.search-section {
+  padding: 15px;
+  background: #f8f9fa;
+}
+
+.filter-section {
+  padding: 0 15px 15px;
+  background: #f8f9fa;
+  
+  ion-segment {
+    --background: white;
+    
+    ion-segment-button {
+      --color: var(--ion-color-medium);
+      --color-checked: white;
+      --indicator-color: var(--ion-color-primary);
+      font-size: 0.8rem;
+      
+      &:nth-child(2) { // ADMIN
+        --color-checked: white;
+        --indicator-color: var(--ion-color-danger);
+      }
+      
+      &:nth-child(3) { // PRODUTOR
+        --color-checked: white;
+        --indicator-color: var(--ion-color-success);
+      }
+      
+      &:nth-child(4) { // CONTRATANTE
+        --color-checked: white;
+        --indicator-color: var(--ion-color-primary);
+      }
+      
+      &:nth-child(5) { // MUSICO
+        --color-checked: white;
+        --indicator-color: var(--ion-color-warning);
+      }
+    }
+  }
+}
+
+.loading-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  
+  ion-spinner {
+    margin-bottom: 15px;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+  }
+}
+
+.section-header {
+  padding: 15px;
+  border-bottom: 1px solid var(--ion-color-light);
+  
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--ion-color-medium);
+    font-weight: 500;
+  }
+}
+
+ion-list {
+  padding: 0;
+}
+
+ion-item-sliding {
+  margin-bottom: 1px;
+  
+  ion-item {
+    --padding-start: 15px;
+    --padding-end: 15px;
+    --inner-padding-end: 0;
+  }
+}
+
+.user-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-right: 10px;
+}
+
+.funcao-badge {
+  font-size: 0.7rem;
+  margin-right: 5px;
+}
+
+.telefone {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+}
+
+.data-cadastro {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+  margin-top: 5px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  
+  .empty-icon {
+    font-size: 4rem;
+    color: var(--ion-color-medium);
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+  
+  h3 {
+    margin: 0 0 10px 0;
+    color: var(--ion-color-dark);
+  }
+  
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+  }
+}
+
+// Estilos para os botões de ação
+ion-item-options {
+  ion-item-option {
+    width: 60px;
+    
+    &.danger {
+      --background: var(--ion-color-danger);
+      --color: white;
+    }
+    
+    ion-icon {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+// Ajustes para avatar
+ion-avatar {
+  width: 50px;
+  height: 50px;
+  background: var(--ion-color-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  ion-icon {
+    font-size: 2rem;
+    color: var(--ion-color-medium);
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .filter-section {
+    ion-segment {
+      overflow-x: auto;
+      display: flex;
+      flex-wrap: nowrap;
+      
+      ion-segment-button {
+        min-width: auto;
+        font-size: 0.7rem;
+        padding: 0 5px;
+      }
+    }
+  }
+}
+
+// ... seus estilos existentes ...
+
+.edit-button {
+  margin-top: 5px;
+  
+  ion-icon {
+    font-size: 1.2rem;
+    color: var(--ion-color-primary);
+  }
+  
+  &:hover {
+    ion-icon {
+      color: var(--ion-color-primary-shade);
+    }
+  }
+}
+
+// Melhorar a aparência dos botões do slide
+ion-item-options {
+  ion-item-option {
+    width: auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    ion-icon {
+      margin-right: 8px;
+      font-size: 1.2rem;
+    }
+    
+    &.danger {
+      --background: var(--ion-color-danger);
+      --color: white;
+    }
+    
+    &.warning {
+      --background: var(--ion-color-warning);
+      --color: white;
+    }
+    
+    &.success {
+      --background: var(--ion-color-success);
+      --color: white;
+    }
+  }
+}
+
+// Para o item de usuário
+ion-item {
+  --min-height: 80px;
+  --padding-start: 15px;
+  --inner-padding-end: 10px;
+  
+  h2 {
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  
+  p {
+    margin: 3px 0;
+    color: var(--ion-color-medium);
+  }
+}
+
+.user-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  
+  ion-badge {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+}

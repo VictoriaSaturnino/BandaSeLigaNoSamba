@@ -1,0 +1,176 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/produtor" text="Voltar"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title>Equipamentos</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="atualizarLista()" fill="clear">
+        <ion-icon name="refresh-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      
+      <ion-button (click)="cadastrarEquipamento()" fill="solid" color="success">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Novo
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Barra de pesquisa -->
+  <div class="filter-section">
+    <ion-searchbar
+      [(ngModel)]="filtro"
+      (ionInput)="filtrarEquipamentos()"
+      placeholder="Buscar equipamentos..."
+      animated
+      clearInput>
+    </ion-searchbar>
+  </div>
+
+  <!-- Cards de estatísticas -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon primary">
+          <ion-icon name="hardware-chip-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ equipamentos.length }}</h3>
+          <p>Total de Equipamentos</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon success">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ equipamentosDisponiveis.length }}</h3>
+          <p>Disponíveis</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon danger">
+          <ion-icon name="close-circle-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ equipamentosIndisponiveis.length }}</h3>
+          <p>Indisponíveis</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controles de ordenação -->
+  <div class="sort-section">
+    <div class="sort-options">
+      <ion-chip [outline]="sortBy !== 'id'" (click)="alterarOrdenacao('id')">
+        <ion-icon name="time-outline" color="primary"></ion-icon>
+        <ion-label>Mais Recentes</ion-label>
+      </ion-chip>
+      
+      <ion-chip [outline]="sortBy !== 'nome'" (click)="alterarOrdenacao('nome')">
+        <ion-icon name="text-outline" color="primary"></ion-icon>
+        <ion-label>Nome (A-Z)</ion-label>
+      </ion-chip>
+      
+      <ion-chip [outline]="sortBy !== 'disponibilidade'" (click)="alterarOrdenacao('disponibilidade')">
+        <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+        <ion-label>Disponibilidade</ion-label>
+      </ion-chip>
+    </div>
+  </div>
+
+  <!-- Lista de equipamentos -->
+  <div class="equipamentos-section">
+    <div class="section-header">
+      <h2>{{ equipamentosFiltrados.length }} equipamento(s)</h2>
+    </div>
+
+    <!-- Lista de equipamentos -->
+    <ion-list lines="full">
+      <ion-item-sliding *ngFor="let equipamento of equipamentosFiltrados">
+        <ion-item detail="false">
+          <div class="equipamento-item">
+            <!-- Informações principais -->
+            <div class="equipamento-info">
+              <h3>{{ equipamento.nmEquipamento }}</h3>
+              
+              <div class="equipamento-meta">
+                <ion-badge [color]="getStatusColor(equipamento.disponivel)">
+                  {{ getStatusText(equipamento.disponivel) }}
+                </ion-badge>
+                
+                <span class="equipamento-tipo">
+                  {{ getTipoEquipamento(equipamento.nmEquipamento) }}
+                </span>
+                
+                <span class="equipamento-id" *ngIf="equipamento.idEquipamento">
+                  ID: #{{ equipamento.idEquipamento.toString().padStart(3, '0') }}
+                </span>
+              </div>
+            </div>
+            
+            <!-- Toggle de disponibilidade -->
+            <div class="equipamento-status">
+              <ion-toggle 
+                slot="end" 
+                [checked]="equipamento.disponivel === 'S'"
+                (ionChange)="alterarDisponibilidade(equipamento, $event.detail.checked ? 'S' : 'N')"
+                aria-label="Disponibilidade">
+              </ion-toggle>
+            </div>
+          </div>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="editarEquipamento(equipamento)">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            Editar
+          </ion-item-option>
+          
+          <ion-item-option color="danger" (click)="confirmarExclusao(equipamento)">
+            <ion-icon name="trash-outline" slot="start"></ion-icon>
+            Excluir
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+    <!-- Estado vazio -->
+    <div class="empty-state" *ngIf="equipamentosFiltrados.length === 0 && !loading">
+      <ion-icon name="hardware-chip-outline" class="empty-icon"></ion-icon>
+      <h3>Nenhum equipamento encontrado</h3>
+      <p *ngIf="filtro">
+        Não há equipamentos correspondentes à busca "{{ filtro }}"
+      </p>
+      <p *ngIf="!filtro">
+        Cadastre o primeiro equipamento para começar
+      </p>
+      <ion-button (click)="cadastrarEquipamento()" color="primary" expand="block" class="empty-button">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Cadastrar Equipamento
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Botão flutuante para mobile -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="equipamentosFiltrados.length > 0">
+    <ion-fab-button color="success" (click)="cadastrarEquipamento()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Loading -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="loading-content">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>Carregando equipamentos...</p>
+    </div>
+  </div>
+</ion-content>

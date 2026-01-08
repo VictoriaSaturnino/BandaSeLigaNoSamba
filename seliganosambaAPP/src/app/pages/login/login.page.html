@@ -1,0 +1,114 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons class="menu-buttons">
+      <ion-button routerLink="/home">HOME</ion-button>
+      <ion-button routerLink="/biografia">BIOGRAFIA</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="login-content">
+  <div class="login-container">
+    <!-- Logo e Título -->
+    <div class="logo-section">
+      <div class="logo-circle">
+        <ion-icon name="musical-notes" class="logo-icon"></ion-icon>
+      </div>
+      <h1 class="login-title">SE LIGA NO SAMBA</h1>
+      <p class="login-subtitle">Entre na sua conta</p>
+    </div>
+
+    <!-- Card de Login -->
+    <div class="login-card">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <ion-item class="form-item">
+            <ion-icon name="mail-outline" slot="start" class="input-icon"></ion-icon>
+            <ion-input 
+              type="email" 
+              formControlName="email"
+              placeholder="seu@email.com"
+              class="custom-input">
+            </ion-input>
+          </ion-item>
+          <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" 
+               class="error-message">
+            <small *ngIf="loginForm.get('email')?.errors?.['required']">
+              E-mail é obrigatório
+            </small>
+            <small *ngIf="loginForm.get('email')?.errors?.['email']">
+              Digite um e-mail válido
+            </small>
+          </div>
+        </div>
+
+        <!-- Senha -->
+        <div class="form-group">
+          <label class="form-label">Senha</label>
+          <ion-item class="form-item">
+            <ion-icon name="lock-closed-outline" slot="start" class="input-icon"></ion-icon>
+            <ion-input 
+              [type]="showPassword ? 'text' : 'password'" 
+              formControlName="senha"
+              placeholder="Digite sua senha"
+              class="custom-input">
+            </ion-input>
+            <ion-button fill="clear" slot="end" (click)="togglePassword()" class="eye-button">
+              <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
+          </ion-item>
+          <div *ngIf="loginForm.get('senha')?.invalid && loginForm.get('senha')?.touched" 
+               class="error-message">
+            <small *ngIf="loginForm.get('senha')?.errors?.['required']">
+              Senha é obrigatória
+            </small>
+            <small *ngIf="loginForm.get('senha')?.errors?.['minlength']">
+              Mínimo de 3 caracteres
+            </small>
+          </div>
+        </div>
+
+        <!-- Lembrar de mim -->
+        <div class="remember-forgot">
+          <ion-checkbox formControlName="lembrar" class="remember-checkbox">
+            Lembrar de mim
+          </ion-checkbox>
+          <a href="#" class="forgot-link">Esqueci minha senha</a>
+        </div>
+
+        <!-- Botão de Login -->
+        <ion-button 
+          type="submit" 
+          expand="block" 
+          class="login-button"
+          [disabled]="loginForm.invalid || loading">
+          <span *ngIf="!loading">Entrar</span>
+          <span *ngIf="loading">
+            <ion-spinner name="crescent" class="spinner"></ion-spinner>
+            Entrando...
+          </span>
+        </ion-button>
+
+        <!-- Mensagem de erro -->
+        <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+          {{ errorMessage }}
+        </div>
+      </form>
+
+      <!-- Link para cadastro -->
+      <div class="register-link">
+        <p>Não tem uma conta? 
+          <a routerLink="/cadastro" class="register-text">Cadastre-se</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="login-footer">
+      <p>© 2024 Banda Se Liga No Samba</p>
+      <p class="footer-sub">Faça login para acessar sua área exclusiva</p>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,743 @@
+.filter-section {
+  padding: 15px 15px 0;
+  background: #f8f9fa;
+  
+  ion-segment {
+    --background: white;
+    
+    ion-segment-button {
+      --color: var(--ion-color-medium);
+      --color-checked: white;
+      --indicator-color: var(--ion-color-primary);
+      font-size: 0.8rem;
+    }
+  }
+}
+
+.search-section {
+  padding: 15px;
+  background: #f8f9fa;
+}
+
+.loading-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  
+  ion-spinner {
+    margin-bottom: 15px;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+  }
+}
+
+.stats-section {
+  padding: 15px;
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+  .stat-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    ion-icon {
+      font-size: 1.8rem;
+      color: white;
+    }
+    
+    .total & {
+      background: var(--ion-color-primary);
+    }
+    
+    .hoje & {
+      background: var(--ion-color-success);
+    }
+    
+    .semana & {
+      background: var(--ion-color-warning);
+    }
+    
+    .mes & {
+      background: var(--ion-color-danger);
+    }
+  }
+  
+  .stat-content {
+    h3 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--ion-color-dark);
+    }
+    
+    p {
+      margin: 5px 0 0 0;
+      color: var(--ion-color-medium);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+  }
+}
+
+.agenda-section {
+  padding: 15px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  
+  h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--ion-color-dark);
+    font-weight: 600;
+  }
+}
+
+// Visualização Calendário
+.calendario-view {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+.calendario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  
+  h3 {
+    margin: 0;
+    color: var(--ion-color-dark);
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+}
+
+.calendario-navegacao {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.dias-semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+  
+  .dia-semana {
+    font-weight: 600;
+    color: var(--ion-color-medium);
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+}
+
+.dias-mes {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.dia-calendario {
+  aspect-ratio: 1;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &.dia-vazio {
+    background: #f8f9fa;
+    color: var(--ion-color-medium);
+  }
+  
+  &.dia-com-evento {
+    background: #e8f5e9;
+    border: 2px solid var(--ion-color-success);
+    
+    &:hover {
+      background: var(--ion-color-success-tint);
+    }   
+  }
+
+}
+
+.dia-calendario {
+  aspect-ratio: 1;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &.dia-vazio {
+    background: #f8f9fa;
+    color: var(--ion-color-medium);
+  }
+  
+  &.dia-com-evento {
+    background: #e8f5e9;
+    border: 2px solid var(--ion-color-success);
+    
+    &:hover {
+      background: #d4edda;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  &.dia-hoje {
+    background: var(--ion-color-primary);
+    color: white;
+    font-weight: 600;
+    
+    &.dia-com-evento {
+      background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-success) 100%);
+      color: white;
+    }
+  }
+  
+  .numero-dia {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  
+  .eventos-dia {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    
+    .evento-marcador {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    
+    .contador-eventos {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+  }
+}
+
+.eventos-dia-selecionado {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #f0f0f0;
+  
+  h4 {
+    margin: 0 0 15px 0;
+    color: var(--ion-color-dark);
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  
+  ion-list {
+    background: transparent;
+    padding: 0;
+  }
+  
+  ion-item {
+    --background: #f8f9fa;
+    --border-radius: 8px;
+    margin-bottom: 10px;
+    
+    ion-label {
+      h3 {
+        margin: 0 0 5px 0;
+        font-weight: 600;
+        color: var(--ion-color-dark);
+      }
+      
+      p {
+        margin: 0;
+        color: var(--ion-color-medium);
+        font-size: 0.9rem;
+      }
+    }
+    
+    ion-badge {
+      margin-top: 5px;
+    }
+  }
+}
+
+// Visualização Lista
+.lista-view {
+  .evento-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    
+    .data-evento {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 70px;
+      
+      .dia-mes {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--ion-color-primary);
+      }
+      
+      .dia-semana {
+        font-size: 0.9rem;
+        color: var(--ion-color-medium);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+    
+    .info-evento {
+      flex: 1;
+      
+      h3 {
+        margin: 0 0 8px 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--ion-color-dark);
+        line-height: 1.3;
+      }
+      
+      .horario-local {
+        margin: 0 0 8px 0;
+        color: var(--ion-color-medium);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        
+        ion-icon {
+          font-size: 1rem;
+          vertical-align: middle;
+        }
+      }
+      
+      .detalhes-evento {
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        
+        .tipo-badge {
+          font-size: 0.8rem;
+        }
+        
+        .convidados, .orcamento {
+          font-size: 0.85rem;
+          color: var(--ion-color-medium);
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
+          
+          ion-icon {
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+    
+    .status-evento {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      
+      .arrow-icon {
+        color: var(--ion-color-medium);
+        font-size: 1.2rem;
+      }
+    }
+  }
+  
+  ion-item-sliding {
+    margin-bottom: 10px;
+    border-radius: 12px;
+    overflow: hidden;
+    
+    ion-item {
+      --background: white;
+      --border-radius: 12px;
+      --padding-start: 15px;
+      --inner-padding-end: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    ion-item-options {
+      ion-item-option {
+        ion-icon {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+  
+  // Grupos por mês
+  .grupo-mes {
+    margin: 30px 0 20px 0;
+    
+    .mes-titulo {
+      margin: 0 0 15px 0;
+      padding: 10px 15px;
+      background: var(--ion-color-primary);
+      color: white;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    ion-list {
+      background: transparent;
+      padding: 0;
+    }
+    
+    ion-item {
+      --background: white;
+      --border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      
+      ion-label {
+        h3 {
+          margin: 0 0 5px 0;
+          font-weight: 600;
+          color: var(--ion-color-dark);
+        }
+        
+        p {
+          margin: 0;
+          color: var(--ion-color-medium);
+          font-size: 0.9rem;
+          line-height: 1.4;
+        }
+      }
+      
+      ion-badge {
+        margin-left: 10px;
+      }
+    }
+  }
+}
+
+// Estado vazio
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  text-align: center;
+  
+  .empty-icon {
+    font-size: 4rem;
+    color: var(--ion-color-medium);
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+  
+  h3 {
+    margin: 0 0 10px 0;
+    color: var(--ion-color-dark);
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+  
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+    max-width: 300px;
+    line-height: 1.5;
+  }
+}
+
+// Responsividade
+@media (max-width: 576px) {
+  .evento-item {
+    .data-evento {
+      min-width: 60px;
+      
+      .dia-mes {
+        font-size: 1.1rem;
+      }
+      
+      .dia-semana {
+        font-size: 0.8rem;
+      }
+    }
+    
+    .info-evento {
+      h3 {
+        font-size: 1rem;
+      }
+      
+      .detalhes-evento {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .calendario-view {
+    padding: 30px;
+  }
+  
+  .lista-view {
+    .evento-item {
+      gap: 20px;
+      
+      .data-evento {
+        min-width: 80px;
+      }
+    }
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+// Animações
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.calendario-view,
+.lista-view,
+.stats-grid,
+.evento-item {
+  animation: fadeIn 0.3s ease-out;
+}
+
+// Loading skeleton
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// Badges personalizados
+ion-badge {
+  &[color="primary"] {
+    --background: var(--ion-color-primary);
+    --color: white;
+  }
+  
+  &[color="success"] {
+    --background: var(--ion-color-success);
+    --color: white;
+  }
+  
+  &[color="warning"] {
+    --background: var(--ion-color-warning);
+    --color: white;
+  }
+  
+  &[color="danger"] {
+    --background: var(--ion-color-danger);
+    --color: white;
+  }
+  
+  &[color="secondary"] {
+    --background: var(--ion-color-secondary);
+    --color: white;
+  }
+  
+  &[color="tertiary"] {
+    --background: var(--ion-color-tertiary);
+    --color: white;
+  }
+}
+
+// Botões personalizados
+ion-button {
+  &[fill="clear"] {
+    --color: var(--ion-color-primary);
+  }
+}
+
+// Lista de eventos no calendário
+ion-list {
+  &.ios {
+    --background: transparent;
+  }
+  
+  &.md {
+    --background: transparent;
+  }
+}
+
+// Scroll personalizado
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+  
+  &:hover {
+    background: #a8a8a8;
+  }
+}
+
+// Ajustes para iOS
+.ios {
+  .filter-section {
+    ion-segment {
+      --background: #f8f9fa;
+    }
+  }
+  
+  .evento-item {
+    .data-evento {
+      .dia-mes {
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+// Ajustes para Material Design
+.md {
+  .filter-section {
+    ion-segment {
+      --background: white;
+    }
+  }
+  
+  .evento-item {
+    .data-evento {
+      .dia-mes {
+        font-weight: 600;
+      }
+    }
+  }
+  
+  ion-item-sliding {
+    ion-item {
+      --background: white;
+    }
+  }
+}
+
+// Dark mode
+@media (prefers-color-scheme: dark) {
+  .filter-section,
+  .search-section {
+    background: var(--ion-color-dark);
+  }
+  
+  .stat-card {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    
+    .stat-content {
+      h3 {
+        color: white;
+      }
+      
+      p {
+        color: rgba(255, 255, 255, 0.8);
+      }
+    }
+  }
+  
+  .calendario-view,
+  .lista-view ion-item {
+    background: var(--ion-color-step-50);
+  }
+  
+  .dia-calendario {
+    &.dia-vazio {
+      background: var(--ion-color-step-100);
+      color: var(--ion-color-step-400);
+    }
+    
+    &.dia-com-evento {
+      background: rgba(var(--ion-color-success-rgb), 0.2);
+    }
+  }
+  
+  .empty-state {
+    .empty-icon {
+      color: var(--ion-color-step-300);
+    }
+    
+    p {
+      color: var(--ion-color-step-400);
+    }
+  }
+}

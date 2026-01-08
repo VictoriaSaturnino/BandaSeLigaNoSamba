@@ -1,0 +1,265 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/dashboard"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title>Agenda Completa</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="exportarAgenda()">
+        <ion-icon name="download-outline" slot="start"></ion-icon>
+        Exportar
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Filtros -->
+  <div class="filter-section">
+    <ion-segment [(ngModel)]="filtroPeriodo" (ionChange)="filtrarAgenda()">
+      <ion-segment-button value="todos">
+        <ion-label>Todos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="hoje">
+        <ion-label>Hoje</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="semana">
+        <ion-label>Esta Semana</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="mes">
+        <ion-label>Este Mês</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="futuro">
+        <ion-label>Futuro</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Barra de pesquisa -->
+  <div class="search-section">
+    <ion-searchbar
+      [(ngModel)]="filtro"
+      (ionChange)="filtrarAgenda()"
+      placeholder="Buscar por evento, local, tipo...">
+    </ion-searchbar>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-section" *ngIf="loading">
+    <ion-spinner></ion-spinner>
+    <p>Carregando agenda...</p>
+  </div>
+
+  <!-- Cards de estatísticas -->
+  <div class="stats-section" *ngIf="!loading && agendamentosAprovados.length > 0">
+    <div class="stats-grid">
+      <div class="stat-card total">
+        <div class="stat-icon">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ agendamentosAprovados.length }}</h3>
+          <p>Total Aprovados</p>
+        </div>
+      </div>
+      
+      <div class="stat-card hoje">
+        <div class="stat-icon">
+          <ion-icon name="today-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ eventosHoje.length }}</h3>
+          <p>Hoje</p>
+        </div>
+      </div>
+      
+      <div class="stat-card semana">
+        <div class="stat-icon">
+          <ion-icon name="calendar-number-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ eventosEstaSemana.length }}</h3>
+          <p>Esta Semana</p>
+        </div>
+      </div>
+      
+      <div class="stat-card mes">
+        <div class="stat-icon">
+          <ion-icon name="calendar-clear-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ eventosEsteMes.length }}</h3>
+          <p>Este Mês</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agenda -->
+  <div class="agenda-section" *ngIf="!loading">
+    <div class="section-header">
+      <h2>{{ agendamentosFiltrados.length }} evento(s) na agenda</h2>
+      <ion-button fill="clear" size="small" (click)="alternarVisualizacao()">
+        <ion-icon [name]="visualizacaoCalendario ? 'list-outline' : 'calendar-outline'" slot="start"></ion-icon>
+        {{ visualizacaoCalendario ? 'Lista' : 'Calendário' }}
+      </ion-button>
+    </div>
+
+    <!-- Visualização em Calendário -->
+    <div class="calendario-view" *ngIf="visualizacaoCalendario">
+      <div class="calendario-header">
+        <h3>{{ mesAtual }} {{ anoAtual }}</h3>
+        <div class="calendario-navegacao">
+          <ion-button fill="clear" size="small" (click)="mesAnterior()">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" size="small" (click)="irParaMesAtual()">
+            Hoje
+          </ion-button>
+          <ion-button fill="clear" size="small" (click)="proximoMes()">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+
+      <div class="dias-semana">
+        <div class="dia-semana">Dom</div>
+        <div class="dia-semana">Seg</div>
+        <div class="dia-semana">Ter</div>
+        <div class="dia-semana">Qua</div>
+        <div class="dia-semana">Qui</div>
+        <div class="dia-semana">Sex</div>
+        <div class="dia-semana">Sáb</div>
+      </div>
+
+      <div class="dias-mes">
+        <div *ngFor="let dia of diasDoMes" 
+             [class.dia-vazio]="!dia.eventos.length"
+             [class.dia-com-evento]="dia.eventos.length > 0"
+             [class.dia-hoje]="dia.hoje"
+             class="dia-calendario"
+             (click)="dia.eventos.length > 0 ? selecionarDia(dia.data) : null">
+          <div class="numero-dia">{{ dia.numero }}</div>
+          <div class="eventos-dia" *ngIf="dia.eventos.length > 0">
+            <div class="evento-marcador" [style.background]="getCorTipoEvento(dia.eventos[0].tipoEvento)"></div>
+            <span class="contador-eventos" *ngIf="dia.eventos.length > 1">
+              +{{ dia.eventos.length - 1 }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Eventos do dia selecionado -->
+      <div class="eventos-dia-selecionado" *ngIf="diaSelecionado && eventosDiaSelecionado.length > 0">
+        <h4>Eventos em {{ formatarData(diaSelecionado) }}</h4>
+        <ion-list>
+          <ion-item *ngFor="let evento of eventosDiaSelecionado" (click)="verDetalhesEvento(evento)">
+            <ion-label>
+              <h3>{{ evento.nomeEvento }}</h3>
+              <p>{{ evento.horario }} • {{ evento.cidade }}</p>
+              <p>
+                <ion-badge [color]="getCorTipoEvento(evento.tipoEvento)">
+                  {{ evento.tipoEvento }}
+                </ion-badge>
+              </p>
+            </ion-label>
+            <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+          </ion-item>
+        </ion-list>
+      </div>
+    </div>
+
+    <!-- Visualização em Lista -->
+    <div class="lista-view" *ngIf="!visualizacaoCalendario">
+      <ion-list>
+        <ion-item-sliding *ngFor="let agendamento of agendamentosFiltrados">
+          <ion-item (click)="verDetalhesEvento(agendamento)">
+            <div class="evento-item">
+              <div class="data-evento">
+                <div class="dia-mes">
+                  {{ getDiaMes(agendamento.dataEvento) }}
+                </div>
+                <div class="dia-semana">
+                  {{ getDiaSemana(agendamento.dataEvento) }}
+                </div>
+              </div>
+              
+              <div class="info-evento">
+                <h3>{{ agendamento.nomeEvento }}</h3>
+                <p class="horario-local">
+                  <ion-icon name="time-outline"></ion-icon>
+                  {{ agendamento.horario }} • 
+                  <ion-icon name="location-outline"></ion-icon>
+                  {{ agendamento.cidade }}
+                </p>
+                <p class="detalhes-evento">
+                  <ion-badge [color]="getCorTipoEvento(agendamento.tipoEvento)" class="tipo-badge">
+                    {{ agendamento.tipoEvento }}
+                  </ion-badge>
+                  <span class="convidados">
+                    <ion-icon name="people-outline"></ion-icon>
+                    {{ agendamento.quantidadeConvidados }} convidados
+                  </span>
+                  <span class="orcamento">
+                    <ion-icon name="cash-outline"></ion-icon>
+                    {{ formatarValor(agendamento.orcamento) }}
+                  </span>
+                </p>
+              </div>
+              
+              <div class="status-evento">
+                <ion-badge color="success" *ngIf="isHoje(agendamento.dataEvento)">
+                  HOJE
+                </ion-badge>
+                <ion-icon name="chevron-forward-outline" class="arrow-icon"></ion-icon>
+              </div>
+            </div>
+          </ion-item>
+
+          <ion-item-options side="end">
+            <ion-item-option color="primary" (click)="criarContrato(agendamento)">
+              <ion-icon name="document-text-outline" slot="start"></ion-icon>
+              Criar Contrato
+            </ion-item-option>
+            
+            <ion-item-option color="secondary" (click)="editarEvento(agendamento)">
+              <ion-icon name="create-outline" slot="start"></ion-icon>
+              Editar
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+
+      <!-- Grupos por mês -->
+      <div class="grupo-mes" *ngFor="let grupo of agrupadosPorMes">
+        <h3 class="mes-titulo">{{ grupo.mes }}</h3>
+        <ion-list>
+          <ion-item *ngFor="let agendamento of grupo.eventos" (click)="verDetalhesEvento(agendamento)">
+            <ion-label>
+              <h3>{{ agendamento.nomeEvento }}</h3>
+              <p>{{ formatarData(agendamento.dataEvento) }} • {{ agendamento.horario }}</p>
+              <p>{{ agendamento.cidade }} • {{ agendamento.tipoEvento }}</p>
+            </ion-label>
+            <ion-badge slot="end" color="success" *ngIf="isHoje(agendamento.dataEvento)">
+              HOJE
+            </ion-badge>
+          </ion-item>
+        </ion-list>
+      </div>
+    </div>
+
+    <!-- Se não houver eventos -->
+    <div class="empty-state" *ngIf="agendamentosFiltrados.length === 0 && !loading">
+      <ion-icon name="calendar-outline" class="empty-icon"></ion-icon>
+      <h3>Nenhum evento na agenda</h3>
+      <p *ngIf="filtroPeriodo !== 'todos' || filtro">
+        Não há eventos aprovados para o período ou busca selecionada
+      </p>
+      <p *ngIf="filtroPeriodo === 'todos' && !filtro">
+        Não há eventos aprovados na agenda
+      </p>
+    </div>
+  </div>
+</ion-content>

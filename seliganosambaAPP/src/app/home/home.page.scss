@@ -1,0 +1,299 @@
+ion-header {
+  --background: linear-gradient(135deg, 
+    rgba(255, 126, 95, 0.9) 0%, 
+    rgba(254, 180, 123, 0.8) 25%, 
+    rgba(106, 17, 203, 0.9) 66%, 
+    rgba(37, 117, 252, 0.8) 100%);
+  background: var(--background);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  position: relative;
+  overflow: hidden;
+  border-bottom: none;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 10% 20%, rgba(255, 126, 95, 0.6) 0%, transparent 50%),
+      radial-gradient(circle at 90% 40%, rgba(106, 17, 203, 0.6) 0%, transparent 50%),
+      radial-gradient(circle at 30% 80%, rgba(254, 180, 123, 0.5) 0%, transparent 50%),
+      radial-gradient(circle at 70% 60%, rgba(37, 117, 252, 0.5) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.2), 
+      transparent);
+    animation: headerShine 8s infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+ion-toolbar {
+  --background: transparent;
+  --ion-color-base: transparent !important;
+  --border-width: 0;
+  --border-color: transparent;
+  --min-height: 64px;
+  
+  position: relative;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: -1;
+  }
+}
+
+// Botão do menu
+ion-menu-button {
+  --color: white;
+  --background: rgba(255, 255, 255, 0.15);
+  --background-hover: rgba(255, 255, 255, 0.25);
+  --background-activated: rgba(255, 255, 255, 0.3);
+  --border-radius: 10px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  margin-left: 8px;
+  
+  ion-icon {
+    font-size: 1.8rem;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+    transition: all 0.3s ease;
+  }
+  
+  &:hover {
+    ion-icon {
+      transform: rotate(90deg) scale(1.1);
+    }
+  }
+  
+  &.ion-activated {
+    ion-icon {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+// Título (SEM SÍMBOLO DE MÚSICA)
+ion-title {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(255, 255, 255, 0.3);
+  letter-spacing: 1px;
+  padding: 0 16px;
+  position: relative;
+  display: inline-block;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -4px;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.8), 
+      transparent);
+    border-radius: 2px;
+  }
+  
+  // REMOVIDO: &::after (símbolo de música)
+}
+
+// Animação do degradê (mantendo consistência)
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+// Animação do brilho no header
+@keyframes headerShine {
+  0%, 100% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+}
+
+// Efeito de partículas no header
+@keyframes floatHeaderParticle {
+  0%, 100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  10%, 90% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+// Adiciona partículas no header
+ion-header {
+  .header-particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    
+    &:nth-child(1) {
+      top: 20%;
+      left: 20%;
+      animation: floatHeaderParticle 6s infinite ease-in-out;
+    }
+    
+    &:nth-child(2) {
+      top: 60%;
+      left: 80%;
+      animation: floatHeaderParticle 8s infinite ease-in-out 1s;
+    }
+    
+    &:nth-child(3) {
+      top: 40%;
+      left: 10%;
+      animation: floatHeaderParticle 7s infinite ease-in-out 2s;
+    }
+  }
+}
+
+// Efeito de borda inferior brilhante
+ion-header {
+  border-bottom: 2px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.6), 
+      transparent);
+    z-index: 3;
+    animation: borderPulse 3s infinite;
+  }
+}
+
+@keyframes borderPulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  ion-header {
+    --min-height: 56px;
+    background-size: 300% 300%;
+  }
+  
+  ion-toolbar {
+    --min-height: 56px;
+  }
+  
+  ion-title {
+    font-size: 1.3rem;
+  }
+  
+  ion-menu-button {
+    --padding-start: 6px;
+    --padding-end: 6px;
+    
+    ion-icon {
+      font-size: 1.6rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  ion-title {
+    font-size: 1.2rem;
+    padding: 0 12px;
+    
+    &::before {
+      width: 70%;
+      bottom: -3px;
+    }
+  }
+  
+  ion-menu-button {
+    margin-left: 4px;
+  }
+}
+
+// Efeito hover no título
+ion-title {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    text-shadow: 
+      0 2px 6px rgba(0, 0, 0, 0.4),
+      0 0 30px rgba(255, 255, 255, 0.4);
+    
+    &::before {
+      width: 80%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 1), 
+        transparent);
+    }
+  }
+}
+
+// Sombra do header
+ion-header {
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(255, 126, 95, 0.2),
+    0 0 60px rgba(106, 17, 203, 0.15);
+}

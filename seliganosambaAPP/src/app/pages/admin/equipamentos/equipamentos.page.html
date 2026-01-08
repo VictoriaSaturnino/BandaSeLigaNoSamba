@@ -1,0 +1,119 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/dashboard"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title>Equipamentos</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="cadastrarEquipamento()" fill="solid" color="success">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Novo Equipamento
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Barra de pesquisa -->
+  <div class="filter-section">
+    <ion-searchbar
+      [(ngModel)]="filtro"
+      (ionChange)="filtrarEquipamentos()"
+      placeholder="Buscar equipamentos...">
+    </ion-searchbar>
+  </div>
+
+  <!-- Cards de estatísticas -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon primary">
+          <ion-icon name="hardware-chip-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ equipamentos.length }}</h3>
+          <p>Total de Equipamentos</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon success">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ equipamentosDisponiveis.length }}</h3>
+          <p>Disponíveis</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon danger">
+          <ion-icon name="close-circle-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ equipamentosIndisponiveis.length }}</h3>
+          <p>Indisponíveis</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de equipamentos -->
+  <div class="equipamentos-section">
+    <div class="section-header">
+      <h2>{{ equipamentosFiltrados.length }} equipamento(s)</h2>
+    </div>
+
+    <!-- Lista simples de equipamentos -->
+    <ion-list>
+      <ion-item-sliding *ngFor="let equipamento of equipamentosFiltrados">
+        <ion-item>
+          <ion-label>
+            <h3>{{ equipamento.nmEquipamento }}</h3>
+            <p>
+              <ion-badge [color]="equipamento.disponivel === 'S' ? 'success' : 'danger'">
+                {{ equipamento.disponivel === 'S' ? 'Disponível' : 'Indisponível' }}
+              </ion-badge>
+            </p>
+          </ion-label>
+          
+          <ion-toggle 
+            slot="end" 
+            [checked]="equipamento.disponivel === 'S'"
+            (ionChange)="alterarDisponibilidade(equipamento, $event.detail.checked ? 'S' : 'N')">
+          </ion-toggle>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="editarEquipamento(equipamento)">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            Editar
+          </ion-item-option>
+          
+          <ion-item-option color="danger" (click)="confirmarExclusao(equipamento)">
+            <ion-icon name="trash-outline" slot="start"></ion-icon>
+            Excluir
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+    <!-- Estado vazio -->
+    <div class="empty-state" *ngIf="equipamentosFiltrados.length === 0 && !loading">
+      <ion-icon name="hardware-chip-outline" class="empty-icon"></ion-icon>
+      <h3>Nenhum equipamento encontrado</h3>
+      <p *ngIf="filtro">
+        Não há equipamentos correspondentes à busca
+      </p>
+      <p *ngIf="!filtro">
+        Cadastre o primeiro equipamento para começar
+      </p>
+      <ion-button (click)="cadastrarEquipamento()" color="primary">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Cadastrar Equipamento
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

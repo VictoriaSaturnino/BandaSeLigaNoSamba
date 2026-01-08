@@ -1,0 +1,200 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/dashboard"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title>Gerenciar Contratos</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="novoContrato()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Novo
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Filtros -->
+  <div class="filter-section">
+    <ion-segment [(ngModel)]="filtroStatus" (ionChange)="filtrarContratos()">
+      <ion-segment-button value="todos">
+        <ion-label>Todos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="pendentes">
+        <ion-label>Pendentes</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="assinados">
+        <ion-label>Assinados</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="parciais">
+        <ion-label>Parciais</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Barra de pesquisa -->
+  <div class="search-section">
+    <ion-searchbar
+      [(ngModel)]="filtro"
+      (ionChange)="filtrarContratos()"
+      placeholder="Buscar por ID, valor...">
+    </ion-searchbar>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-section" *ngIf="loading">
+    <ion-spinner></ion-spinner>
+    <p>Carregando contratos...</p>
+  </div>
+
+  <!-- Cards de estatísticas -->
+  <div class="stats-section" *ngIf="!loading && contratos.length > 0">
+    <div class="stats-grid">
+      <div class="stat-card total">
+        <div class="stat-icon">
+          <ion-icon name="document-text-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ contratos.length }}</h3>
+          <p>Total</p>
+        </div>
+      </div>
+      
+      <div class="stat-card assinados">
+        <div class="stat-icon">
+          <ion-icon name="checkmark-done-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ contratosAssinados.length }}</h3>
+          <p>Assinados</p>
+        </div>
+      </div>
+      
+      <div class="stat-card pendentes">
+        <div class="stat-icon">
+          <ion-icon name="time-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ contratosPendentes.length }}</h3>
+          <p>Pendentes</p>
+        </div>
+      </div>
+      
+      <div class="stat-card parciais">
+        <div class="stat-icon">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ contratosParciais.length }}</h3>
+          <p>Parciais</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de contratos -->
+  <div class="contratos-section" *ngIf="!loading">
+    <div class="section-header">
+      <h2>{{ contratosFiltrados.length }} contrato(s) encontrado(s)</h2>
+    </div>
+
+    <div class="contratos-grid">
+      <ion-card *ngFor="let contrato of contratosFiltrados" class="contrato-card">
+        <ion-card-header>
+          <div class="card-header-content">
+            <div>
+              <ion-card-title>Contrato #{{ contrato.idContrato }}</ion-card-title>
+              <ion-card-subtitle>
+                Agendamento: #{{ contrato.idAgendamento }}
+              </ion-card-subtitle>
+            </div>
+            <ion-badge [color]="getStatusColor(contrato)" class="status-badge">
+              {{ getStatusContrato(contrato) }}
+            </ion-badge>
+          </div>
+        </ion-card-header>
+
+        <ion-card-content>
+          <div class="contrato-info">
+            <div class="info-row">
+              <ion-icon name="cash-outline" class="info-icon"></ion-icon>
+              <div class="info-content">
+                <span class="info-label">Valor:</span>
+                <span class="info-value">{{ formatarValor(contrato.valor) }}</span>
+              </div>
+            </div>
+            
+            <div class="info-row">
+              <ion-icon name="calendar-outline" class="info-icon"></ion-icon>
+              <div class="info-content">
+                <span class="info-label">Criação:</span>
+                <span class="info-value">{{ formatarData(contrato.dataCriacao || '') }}</span>
+              </div>
+            </div>
+            
+            <div class="info-row">
+              <ion-icon name="business-outline" class="info-icon"></ion-icon>
+              <div class="info-content">
+                <span class="info-label">Assinaturas:</span>
+                <div class="assinaturas-status">
+                  <ion-badge [color]="contrato.assinaturaProdutor ? 'success' : 'danger'" class="assinatura-badge">
+                    <ion-icon [name]="contrato.assinaturaProdutor ? 'checkmark' : 'close'"></ion-icon>
+                    Produtor
+                  </ion-badge>
+                  <ion-badge [color]="contrato.assinaturaContratante ? 'success' : 'danger'" class="assinatura-badge">
+                    <ion-icon [name]="contrato.assinaturaContratante ? 'checkmark' : 'close'"></ion-icon>
+                    Contratante
+                  </ion-badge>
+                </div>
+              </div>
+            </div>
+            
+            <div class="info-row" *ngIf="contrato.dataAssinatura">
+              <ion-icon name="time-outline" class="info-icon"></ion-icon>
+              <div class="info-content">
+                <span class="info-label">Assinado em:</span>
+                <span class="info-value">{{ formatarData(contrato.dataAssinatura) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTÕES DE AÇÃO - ADICIONE ESTA SEÇÃO -->
+          <div class="card-actions">
+            <ion-button expand="block" color="primary" size="small" (click)="visualizarContrato(contrato)">
+              <ion-icon name="document-text-outline" slot="start"></ion-icon>
+              Gerar PDF
+            </ion-button>
+            
+            <div class="action-buttons">
+              <ion-button fill="clear" size="small" (click)="editarContrato(contrato)">
+                <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+              </ion-button>
+              
+              <ion-button fill="clear" size="small" color="danger" (click)="confirmarExclusao(contrato)">
+                <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Se não houver contratos -->
+    <div class="empty-state" *ngIf="contratosFiltrados.length === 0 && !loading">
+      <ion-icon name="document-text-outline" class="empty-icon"></ion-icon>
+      <h3>Nenhum contrato encontrado</h3>
+      <p *ngIf="filtroStatus !== 'todos' || filtro">
+        Tente ajustar seus filtros ou busque por outro termo
+      </p>
+      <p *ngIf="filtroStatus === 'todos' && !filtro">
+        Nenhum contrato cadastrado ainda. Crie o primeiro!
+      </p>
+      <ion-button (click)="novoContrato()" color="primary" fill="outline">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Criar Primeiro Contrato
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

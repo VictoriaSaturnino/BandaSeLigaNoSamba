@@ -1,0 +1,146 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    
+    <ion-title>Dashboard Admin</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()" fill="clear">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        Sair
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Cabeçalho com saudação -->
+  <div class="welcome-section">
+    <div class="welcome-content">
+      <h1>Olá, {{ usuario?.nome }}! 👋</h1>
+      <p>Bem-vindo ao painel de administração do Se Liga No Samba</p>
+    </div>
+    <div class="user-info">
+      <ion-avatar>
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-avatar>
+      <div class="user-details">
+        <span class="user-name">{{ usuario?.nome }}</span>
+        <span class="user-role">{{ usuario?.funcao }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estatísticas gerais -->
+  <div class="stats-section">
+    <h2>Visão Geral do Sistema</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon primary">
+          <ion-icon name="people-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ estatisticas.totalUsuarios }}</h3>
+          <p>Usuários</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon secondary">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ estatisticas.totalAgendamentos }}</h3>
+          <p>Agendamentos</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon success">
+          <ion-icon name="document-text-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ estatisticas.totalContratos }}</h3>
+          <p>Contratos</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon warning">
+          <ion-icon name="cash-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ estatisticas.totalOrcamentos }}</h3>
+          <p>Orçamentos</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu de funcionalidades -->
+  <div class="features-section">
+    <h2>Gerenciamento do Sistema</h2>
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let item of menuItems" (click)="navigateTo(item.route)">
+        <div class="feature-icon" [ngClass]="item.color">
+          <ion-icon [name]="item.icon"></ion-icon>
+        </div>
+        <div class="feature-content">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+          <div class="feature-badge" *ngIf="item.count > 0">
+            <span>{{ item.count }}</span>
+          </div>
+        </div>
+        <div class="feature-arrow">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Atividades recentes -->
+  <div class="recent-section">
+    <div class="section-header">
+      <h2>Atividades Recentes</h2>
+      <ion-button fill="clear" size="small">
+        Ver todas
+        <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+      </ion-button>
+    </div>
+    
+    <div class="activity-list">
+      <div class="activity-item">
+        <div class="activity-icon success">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </div>
+        <div class="activity-content">
+          <p>Novo agendamento realizado por João Silva</p>
+          <span class="activity-time">Há 2 horas</span>
+        </div>
+      </div>
+      
+      <div class="activity-item">
+        <div class="activity-icon warning">
+          <ion-icon name="time-outline"></ion-icon>
+        </div>
+        <div class="activity-content">
+          <p>Contrato #1234 aguardando assinatura</p>
+          <span class="activity-time">Há 5 horas</span>
+        </div>
+      </div>
+      
+      <div class="activity-item">
+        <div class="activity-icon primary">
+          <ion-icon name="person-add-outline"></ion-icon>
+        </div>
+        <div class="activity-content">
+          <p>Novo usuário cadastrado: Maria Santos</p>
+          <span class="activity-time">Há 1 dia</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

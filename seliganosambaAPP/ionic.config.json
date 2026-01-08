@@ -1,0 +1,7 @@
+{
+  "name": "seliganosamba",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

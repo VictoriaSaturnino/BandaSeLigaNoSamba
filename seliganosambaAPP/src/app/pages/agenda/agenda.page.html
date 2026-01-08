@@ -1,0 +1,184 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Agenda</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="agenda-content" [class.no-events]="agendamentos.length === 0">
+  
+  <!-- Imagem de fundo -->
+  <div class="background-image-container">
+    <img 
+      src="assets/images/agenda-bg.jpg" 
+      alt="Background Agenda"
+      (load)="onImageLoad()"
+      (error)="onImageError()"
+      class="background-image"
+      [class.hidden]="!imageLoaded || imageError"
+    >
+    <div *ngIf="!imageLoaded && !imageError" class="image-loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Carregando imagem...</p>
+    </div>
+    <div *ngIf="imageError" class="image-error">
+      <ion-icon name="image-outline"></ion-icon>
+      <p>Imagem não disponível</p>
+    </div>
+  </div>
+
+  <!-- Conteúdo principal -->
+  <div class="agenda-container" *ngIf="!loading; else loadingTemplate">
+    
+    <!-- Mensagem de erro -->
+    <div *ngIf="error" class="error-message">
+      <ion-icon name="warning-outline"></ion-icon>
+      <p>{{ error }}</p>
+      <ion-button fill="clear" (click)="load()">
+        <ion-icon name="refresh" slot="start"></ion-icon>
+        Tentar novamente
+      </ion-button>
+    </div>
+
+    <!-- Quando não há eventos -->
+    <div *ngIf="!error && agendamentos.length === 0" class="no-events">
+      <div class="no-events-icon">
+        <ion-icon name="calendar-outline"></ion-icon>
+      </div>
+      <h2>Nenhum evento público agendado</h2>
+      <p>Fique ligado nas próximas datas!</p>
+      <ion-button fill="outline" (click)="load()">
+        <ion-icon name="refresh" slot="start"></ion-icon>
+        Recarregar
+      </ion-button>
+    </div>
+
+    <!-- Lista de eventos -->
+    <div *ngIf="!error && agendamentos.length > 0" class="events-list">
+      <div class="header">
+        <h1>Próximos Eventos</h1>
+        <p>{{ agendamentos.length }} evento{{ agendamentos.length !== 1 ? 's' : '' }} público{{ agendamentos.length !== 1 ? 's' : '' }}</p>
+      </div>
+
+      <div class="event-cards">
+        <div *ngFor="let evento of agendamentos" 
+             class="event-card" 
+             [class.selected]="selected === evento"
+             (click)="openDetails(evento)">
+          
+          <div class="event-date">
+            <div class="day">{{ getDay(evento.dataEvento) }}</div>
+            <div class="month">{{ getMonth(evento.dataEvento) }}</div>
+          </div>
+
+          <div class="event-info">
+            <div class="event-header">
+              <span class="event-type">{{ getEventTypeLabel(evento.tipoEvento) }}</span>
+              <span class="event-time">{{ formatTime(evento.horarioEvento) }}</span>
+            </div>
+            
+            <h3 class="event-title">{{ evento.nomeEvento || 'Show da Banda' }}</h3>
+            
+            <div class="event-location">
+              <ion-icon name="location-outline"></ion-icon>
+              <span>{{ evento.cidade || 'Cidade' }} - {{ evento.estado || 'Estado' }}</span>
+            </div>
+
+            <div class="event-description" *ngIf="evento.descricao">
+             <p>{{ truncateDescription(evento.descricao, 100) }}</p>
+            </div>
+          </div>
+
+          <div class="event-actions">
+            <ion-button fill="clear" size="small" (click)="$event.stopPropagation(); openDetails(evento)">
+              <ion-icon name="information-circle-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de detalhes -->
+  <div *ngIf="selected" class="details-overlay" (click)="closeDetails()">
+    <div class="details-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ selected.nomeEvento || 'Detalhes do Evento' }}</h2>
+        <ion-button fill="clear" (click)="closeDetails()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div class="modal-content">
+        <div class="detail-row">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <div>
+            <strong>Data:</strong>
+            <p>{{ getDay(selected.dataEvento) }} de {{ getMonth(selected.dataEvento) }}</p>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <ion-icon name="time-outline"></ion-icon>
+          <div>
+            <strong>Horário:</strong>
+            <p>{{ formatTime(selected.horarioEvento) }}</p>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <ion-icon name="location-outline"></ion-icon>
+          <div>
+            <strong>Local:</strong>
+            <p>{{ selected.cidade || 'Cidade' }} - {{ selected.estado || 'Estado' }}</p>
+            <p *ngIf="selected.endereco" class="address">{{ selected.endereco }}</p>
+          </div>
+        </div>
+
+        <div class="detail-row" *ngIf="selected.descricao">
+          <ion-icon name="document-text-outline"></ion-icon>
+          <div>
+            <strong>Descrição:</strong>
+            <p>{{ selected.descricao }}</p>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <ion-icon name="ticket-outline"></ion-icon>
+          <div>
+            <strong>Tipo de Evento:</strong>
+            <p>{{ getEventTypeLabel(selected.tipoEvento) }}</p>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <ion-button expand="block" color="primary" (click)="shareEvent()">
+            <ion-icon name="share-social-outline" slot="start"></ion-icon>
+            Compartilhar Evento
+          </ion-button>
+          <ion-button expand="block" fill="outline" (click)="closeDetails()">
+            Fechar
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Template de loading -->
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Carregando agenda...</p>
+    </div>
+  </ng-template>
+
+</ion-content>
+
+<!-- Botão flutuante para recarregar -->
+<ion-fab *ngIf="!loading && agendamentos.length > 0" vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="load()">
+    <ion-icon name="refresh"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

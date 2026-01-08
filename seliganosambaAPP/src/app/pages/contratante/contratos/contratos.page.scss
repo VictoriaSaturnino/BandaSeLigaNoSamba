@@ -1,0 +1,728 @@
+.stats-section {
+  padding: 15px;
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    ion-icon {
+      font-size: 2rem;
+      color: white;
+    }
+    
+    &.primary {
+      background: var(--ion-color-primary);
+    }
+    
+    &.secondary {
+      background: var(--ion-color-secondary);
+    }
+    
+    &.success {
+      background: var(--ion-color-success);
+    }
+    
+    &.warning {
+      background: var(--ion-color-warning);
+    }
+    
+    &.danger {
+      background: var(--ion-color-danger);
+    }
+  }
+  
+  .stat-content {
+    h3 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--ion-color-dark);
+    }
+    
+    p {
+      margin: 5px 0 0 0;
+      color: var(--ion-color-medium);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+  }
+}
+
+.contratos-section {
+  padding: 15px;
+}
+
+.section-header {
+  margin-bottom: 20px;
+  
+  h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--ion-color-dark);
+    font-weight: 600;
+  }
+}
+
+.contratos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contrato-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  &.assinado {
+    border-top: 4px solid var(--ion-color-success);
+  }
+  
+  &.pendente {
+    border-top: 4px solid var(--ion-color-warning);
+  }
+}
+
+.contrato-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #eee;
+  
+  .contrato-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    
+    &.assinado {
+      background: rgba(var(--ion-color-success-rgb), 0.1);
+      color: var(--ion-color-success);
+    }
+    
+    &.pendente {
+      background: rgba(var(--ion-color-warning-rgb), 0.1);
+      color: var(--ion-color-warning);
+    }
+    
+    ion-icon {
+      font-size: 1rem;
+    }
+  }
+  
+  .contrato-numero {
+    font-size: 0.9rem;
+    color: var(--ion-color-medium);
+    font-weight: 600;
+  }
+}
+
+.contrato-content {
+  padding: 15px;
+  
+  h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+  
+  .contrato-valor {
+    margin: 0 0 15px 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+  }
+  
+  .contrato-detalhes {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+    
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .detalhe-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ion-color-medium);
+      font-size: 0.9rem;
+      
+      ion-icon {
+        font-size: 1rem;
+        color: var(--ion-color-primary);
+        min-width: 20px;
+      }
+    }
+  }
+  
+  .contrato-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    
+    ion-button {
+      --border-radius: 8px;
+      flex: 1;
+      min-width: 120px;
+    }
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  text-align: center;
+  
+  .empty-icon {
+    font-size: 4rem;
+    color: var(--ion-color-medium);
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+  
+  h3 {
+    margin: 0 0 10px 0;
+    color: var(--ion-color-dark);
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+  
+  p {
+    margin: 0 0 10px 0;
+    color: var(--ion-color-medium);
+    max-width: 300px;
+    line-height: 1.5;
+  }
+  
+  ion-button {
+    --border-radius: 10px;
+    --padding-start: 20px;
+    --padding-end: 20px;
+    margin-top: 15px;
+  }
+}
+
+.loading-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  
+  ion-spinner {
+    margin-bottom: 15px;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+  }
+}
+
+// Responsividade
+@media (max-width: 576px) {
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .stat-card {
+    padding: 12px;
+    
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      
+      ion-icon {
+        font-size: 1.5rem;
+      }
+    }
+    
+    .stat-content {
+      h3 {
+        font-size: 1.5rem;
+      }
+    }
+  }
+  
+  .contrato-buttons {
+    flex-direction: column;
+    
+    ion-button {
+      width: 100%;
+    }
+  }
+}
+
+// Dark mode
+@media (prefers-color-scheme: dark) {
+  .stat-card {
+    background: var(--ion-color-step-100);
+    
+    .stat-content {
+      h3 {
+        color: white;
+      }
+      
+      p {
+        color: rgba(255, 255, 255, 0.7);
+      }
+    }
+  }
+  
+  .contrato-card {
+    background: var(--ion-color-step-50);
+  }
+  
+  .contrato-header {
+    background: var(--ion-color-step-100);
+  }
+  
+  .empty-state {
+    .empty-icon {
+      color: var(--ion-color-step-300);
+    }
+    
+    h3 {
+      color: white;
+    }
+    
+    p {
+      color: var(--ion-color-step-400);
+    }
+  }
+}
+
+.loading-pdf {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  
+  ion-spinner {
+    width: 60px;
+    height: 60px;
+    color: white;
+  }
+  
+  p {
+    color: white;
+    margin-top: 15px;
+    font-size: 16px;
+  }
+
+  // Loading section
+.loading-section {
+  text-align: center;
+  padding: 50px 20px;
+  
+  ion-spinner {
+    width: 40px;
+    height: 40px;
+  }
+  
+  p {
+    margin-top: 15px;
+    color: var(--ion-color-medium);
+  }
+}
+
+// Quick filters
+.quick-filters {
+  display: flex;
+  overflow-x: auto;
+  padding: 10px 16px;
+  gap: 8px;
+  margin-top: 10px;
+  
+  ion-chip {
+    flex-shrink: 0;
+    font-size: 12px;
+  }
+}
+
+// Search section
+.search-section {
+  padding: 10px 16px;
+  background: var(--ion-color-light);
+}
+
+// Contract card styles
+.contratos-section {
+  padding: 16px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+}
+
+.contratos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contrato-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid var(--ion-color-medium);
+  
+  &.assinado {
+    border-left-color: var(--ion-color-success);
+  }
+  
+  &.pendente {
+    border-left-color: var(--ion-color-warning);
+  }
+  
+  &.vencido {
+    border-left-color: var(--ion-color-secondary);
+    opacity: 0.8;
+  }
+}
+
+.status-badge {
+  position: absolute;
+  top: -8px;
+  right: 16px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: white;
+  
+  &.assinado {
+    background: var(--ion-color-success);
+  }
+  
+  &.pendente {
+    background: var(--ion-color-warning);
+  }
+}
+
+.contrato-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  
+  .contrato-numero {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    font-size: 14px;
+  }
+  
+  .contrato-data {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--ion-color-medium);
+  }
+}
+
+.contrato-content {
+  h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+}
+
+.contrato-valor-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  
+  .contrato-valor {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+  }
+  
+  .contrato-status-text {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    
+    &.assinado {
+      background: #e8f5e9;
+      color: var(--ion-color-success);
+    }
+    
+    &.pendente {
+      background: #fff8e1;
+      color: var(--ion-color-warning);
+    }
+  }
+}
+
+.contrato-detalhes {
+  background: var(--ion-color-light);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.detalhe-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  ion-icon {
+    color: var(--ion-color-medium);
+    font-size: 16px;
+    min-width: 20px;
+  }
+  
+  .detalhe-label {
+    font-weight: 500;
+    color: var(--ion-color-dark);
+    min-width: 80px;
+  }
+  
+  .detalhe-value {
+    flex: 1;
+    
+    &.assinado {
+      color: var(--ion-color-success);
+      font-weight: 600;
+    }
+    
+    &.pendente {
+      color: var(--ion-color-warning);
+      font-weight: 600;
+    }
+  }
+}
+
+.vencimento-alert {
+  background: #ffebee;
+  color: #c62828;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  
+  ion-icon {
+    font-size: 16px;
+  }
+}
+
+.contrato-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  
+  ion-button {
+    flex: 1;
+    min-width: 100px;
+    font-size: 12px;
+    --padding-start: 8px;
+    --padding-end: 8px;
+  }
+}
+
+// Empty state
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  
+  .empty-icon {
+    font-size: 64px;
+    color: var(--ion-color-medium);
+    margin-bottom: 20px;
+  }
+  
+  h3 {
+    margin: 0 0 10px 0;
+    color: var(--ion-color-dark);
+    font-weight: 600;
+  }
+  
+  p {
+    margin: 0 0 10px 0;
+    color: var(--ion-color-medium);
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  ion-button {
+    margin-top: 20px;
+  }
+}
+
+// Loading PDF overlay
+.loading-pdf-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-pdf-content {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  text-align: center;
+  max-width: 300px;
+  
+  ion-spinner {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 15px;
+  }
+  
+  p {
+    margin: 0 0 5px 0;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+  
+  .loading-subtext {
+    font-size: 12px;
+    color: var(--ion-color-medium);
+    font-weight: normal;
+  }
+}
+
+// Quick guide
+.quick-guide {
+  padding: 20px 16px;
+  
+  .guide-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 20px;
+    
+    h4 {
+      margin: 0 0 15px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+    }
+    
+    ul {
+      margin: 0;
+      padding-left: 20px;
+      
+      li {
+        margin-bottom: 8px;
+        font-size: 13px;
+        line-height: 1.4;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .contrato-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .contrato-buttons ion-button {
+    flex: 1 0 calc(50% - 8px);
+  }
+  
+  .quick-filters {
+    padding: 10px;
+  }
+}
+}

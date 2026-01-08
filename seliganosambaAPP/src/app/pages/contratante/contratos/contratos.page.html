@@ -1,0 +1,258 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/contratante/dashboard"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title>Meus Contratos</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="verContratoAssinatura()" fill="clear" *ngIf="contratosPendentes.length > 0">
+        <ion-icon name="pencil-outline" slot="start"></ion-icon>
+        Assinar
+      </ion-button>
+      
+      <!-- Botão para recarregar contratos -->
+      <ion-button (click)="carregarDados()" fill="clear">
+        <ion-icon name="refresh-outline" slot="start"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Loading state -->
+  <div class="loading-section" *ngIf="loading">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Carregando contratos...</p>
+  </div>
+
+  <!-- Cards de estatísticas - só mostra quando não estiver loading -->
+  <div class="stats-section" *ngIf="!loading && contratos.length > 0">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon primary">
+          <ion-icon name="document-text-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ contratos.length }}</h3>
+          <p>Total de Contratos</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon success">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ contratosAssinados.length }}</h3>
+          <p>Assinados</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon warning">
+          <ion-icon name="time-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ contratosPendentes.length }}</h3>
+          <p>Pendentes</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon secondary">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ contratosVencidos.length }}</h3>
+          <p>Vencidos</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Filtros rápidos -->
+    <div class="quick-filters">
+      <ion-chip [outline]="true" (click)="filtrarContratos('todos')" [color]="filtroAtivo === 'todos' ? 'primary' : 'medium'">
+        <ion-label>Todos ({{contratos.length}})</ion-label>
+      </ion-chip>
+      
+      <ion-chip [outline]="true" (click)="filtrarContratos('assinados')" [color]="filtroAtivo === 'assinados' ? 'success' : 'medium'">
+        <ion-label>Assinados ({{contratosAssinados.length}})</ion-label>
+      </ion-chip>
+      
+      <ion-chip [outline]="true" (click)="filtrarContratos('pendentes')" [color]="filtroAtivo === 'pendentes' ? 'warning' : 'medium'">
+        <ion-label>Pendentes ({{contratosPendentes.length}})</ion-label>
+      </ion-chip>
+      
+      <ion-chip [outline]="true" (click)="filtrarContratos('vencidos')" [color]="filtroAtivo === 'vencidos' ? 'secondary' : 'medium'">
+        <ion-label>Vencidos ({{contratosVencidos.length}})</ion-label>
+      </ion-chip>
+    </div>
+  </div>
+
+  <!-- Barra de pesquisa -->
+  <div class="search-section" *ngIf="!loading && contratos.length > 0">
+    <ion-searchbar 
+      [(ngModel)]="termoBusca"
+      (ionInput)="buscarContratos()"
+      placeholder="Buscar por evento, número do contrato..."
+      animated
+      clearInput>
+    </ion-searchbar>
+  </div>
+
+  <!-- Lista de contratos -->
+  <div class="contratos-section" *ngIf="!loading">
+    <div class="section-header">
+      <h2 *ngIf="contratosFiltrados && termoBusca">
+        {{ contratosFiltrados.length }} contrato(s) encontrado(s) para "{{ termoBusca }}"
+      </h2>
+      <h2 *ngIf="contratosFiltrados && !termoBusca">
+        Meus Contratos ({{ contratosFiltrados ? contratosFiltrados.length : contratos.length }})
+      </h2>
+      <h2 *ngIf="!contratosFiltrados">
+        Meus Contratos ({{ contratos.length }})
+      </h2>
+      
+      <div class="section-actions" *ngIf="contratos.length > 0">
+        <ion-button fill="clear" size="small" (click)="ordenarPorData()">
+          <ion-icon name="calendar-outline" slot="start"></ion-icon>
+          Ordenar por Data
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Lista de contratos -->
+    <div class="contratos-list" *ngIf="(contratosFiltrados || contratos).length > 0">
+      <div class="contrato-card" 
+           *ngFor="let contrato of (contratosFiltrados || contratos)" 
+           [ngClass]="{
+             'assinado': contrato.assinaturaContratante && contrato.assinaturaProdutor,
+             'pendente': !contrato.assinaturaContratante || !contrato.assinaturaProdutor,
+             'vencido': isContratoVencido(contrato)
+           }">
+        
+        <!-- Badge de status -->
+        <div class="status-badge" [ngClass]="getStatusClass(contrato)">
+          <ion-icon [name]="getStatusIcon(contrato)"></ion-icon>
+          <span>{{ getStatusTexto(contrato) }}</span>
+        </div>
+        
+        <div class="contrato-header">
+          <div class="contrato-numero">
+            <ion-icon name="document-outline"></ion-icon>
+            Contrato #{{ contrato.idContrato }}
+          </div>
+          <div class="contrato-data">
+            <ion-icon name="calendar-outline" size="small"></ion-icon>
+            {{ formatarData(contrato.dataCriacao) }}
+          </div>
+        </div>
+        
+        <div class="contrato-content">
+          <h3>{{ getNomeEvento(contrato.idAgendamento) }}</h3>
+          
+          <div class="contrato-valor-container">
+            <span class="contrato-valor">{{ formatarValor(contrato.valor) }}</span>
+            <span class="contrato-status-text" [ngClass]="getStatusClass(contrato)">
+              {{ getStatusContrato(contrato) }}
+            </span>
+          </div>
+          
+          <div class="contrato-detalhes">
+            <div class="detalhe-item">
+              <ion-icon name="person-outline"></ion-icon>
+              <span class="detalhe-label">Produtor:</span>
+              <span class="detalhe-value" [ngClass]="{'assinado': contrato.assinaturaProdutor, 'pendente': !contrato.assinaturaProdutor}">
+                {{ contrato.assinaturaProdutor ? 'Assinado' : 'Pendente' }}
+              </span>
+            </div>
+            
+            <div class="detalhe-item">
+              <ion-icon name="person-outline"></ion-icon>
+              <span class="detalhe-label">Você:</span>
+              <span class="detalhe-value" [ngClass]="{'assinado': contrato.assinaturaContratante, 'pendente': !contrato.assinaturaContratante}">
+                {{ contrato.assinaturaContratante ? 'Assinado' : 'Pendente' }}
+              </span>
+            </div>
+            
+            <div class="detalhe-item" *ngIf="contrato.dataAssinatura">
+              <ion-icon name="checkmark-outline"></ion-icon>
+              <span class="detalhe-label">Assinado em:</span>
+              <span class="detalhe-value">{{ formatarDataCompleta(contrato.dataAssinatura) }}</span>
+            </div>
+          </div>
+          
+          <!-- Indicador de vencimento -->
+          <div class="vencimento-alert" *ngIf="isContratoVencido(contrato)">
+            <ion-icon name="warning-outline"></ion-icon>
+            <span>Evento já realizado</span>
+          </div>
+          
+          <div class="contrato-buttons">
+            
+            <!-- Botão Assinar (só aparece se não assinou) -->
+            <ion-button fill="outline" size="small" color="success" 
+                       (click)="assinarContrato(contrato)"
+                       *ngIf="!contrato.assinaturaContratante">
+              <ion-icon name="pencil-outline" slot="start"></ion-icon>
+              Assinar
+            </ion-button>
+            
+            <!-- Botão Download PDF -->
+            <ion-button fill="outline" size="small" color="primary" (click)="baixarContrato(contrato)">
+              <ion-icon name="download-outline" slot="start"></ion-icon>
+              PDF
+            </ion-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado vazio -->
+    <div class="empty-state" *ngIf="!loading && contratos.length === 0">
+      <ion-icon name="document-text-outline" class="empty-icon"></ion-icon>
+      <h3>Nenhum contrato encontrado</h3>
+      <p>Você ainda não possui contratos cadastrados.</p>
+      <p>Solicite um orçamento para começar!</p>
+      <ion-button routerLink="/contratante/solicitar-orcamento" color="primary" fill="solid">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Solicitar Orçamento
+      </ion-button>
+    </div>
+
+    <!-- Nenhum resultado na busca -->
+    <div class="empty-state" *ngIf="!loading && contratos.length > 0 && contratosFiltrados && contratosFiltrados.length === 0">
+      <ion-icon name="search-outline" class="empty-icon"></ion-icon>
+      <h3>Nenhum contrato encontrado</h3>
+      <p>Não foram encontrados contratos para "{{ termoBusca }}"</p>
+      <ion-button (click)="limparBusca()" color="medium" fill="outline">
+        <ion-icon name="close-outline" slot="start"></ion-icon>
+        Limpar Busca
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Loading durante geração de PDF -->
+  <div class="loading-pdf-overlay" *ngIf="gerandoPDF">
+    <div class="loading-pdf-content">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>Gerando PDF...</p>
+      <p class="loading-subtext">Isso pode levar alguns segundos</p>
+    </div>
+  </div>
+
+  <!-- Guia rápida -->
+  <div class="quick-guide" *ngIf="!loading && contratos.length > 0">
+    <div class="guide-card">
+      <h4><ion-icon name="information-circle-outline"></ion-icon> Como funciona</h4>
+      <ul>
+        <li><strong>Contratos Pendentes:</strong> Aguardam sua assinatura</li>
+        <li><strong>Contratos Assinados:</strong> Já estão validados por ambas as partes</li>
+        <li><strong>Baixe o PDF</strong> para ter uma cópia do contrato</li>
+        <li><strong>Visualize os detalhes</strong> para ver todas as informações</li>
+      </ul>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,382 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    
+    <ion-title>Dashboard do Produtor</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="atualizarDashboard()" fill="clear">
+        <ion-icon name="refresh-outline" slot="start"></ion-icon>
+        Atualizar
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Saudação e menu rápido -->
+  <div class="welcome-section">
+    <div class="welcome-content">
+      <h1>Olá, {{ usuario?.nome }}! 🎶</h1>
+      <p>Bem-vindo ao painel de controle da banda</p>
+    </div>
+    
+    <div class="quick-actions">
+      <ion-button (click)="navegarParaEquipamentos()" fill="solid" color="warning">
+        <ion-icon name="hardware-chip-outline" slot="start"></ion-icon>
+        Equipamentos
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Cards de estatísticas -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <!-- Agenda -->
+      <div class="stat-card">
+        <div class="stat-icon primary">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ estatisticas.totalEventos }}</h3>
+          <p>Eventos Confirmados</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon warning">
+          <ion-icon name="time-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ estatisticas.proximos7Dias }}</h3>
+          <p>Próximos 7 Dias</p>
+        </div>
+      </div>
+      
+      <!-- Equipamentos -->
+      <div class="stat-card" (click)="navegarParaEquipamentos()" style="cursor: pointer;">
+        <div class="stat-icon dark">
+          <ion-icon name="hardware-chip-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ estatisticas.equipamentosTotal }}</h3>
+          <p>Total Equipamentos</p>
+          <div class="stat-sub">
+            <span class="disponivel">{{ estatisticas.equipamentosDisponiveis }} disp.</span>
+            <span class="indisponivel">{{ estatisticas.equipamentosIndisponiveis }} indisp.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO DA AGENDA - IGUAL AO MÚSICO -->
+  <div class="agenda-completa-section">
+    <!-- Título da seção -->
+    <div class="section-header">
+      <h2>Agenda da Banda</h2>
+    </div>
+    
+    <!-- Filtros (igual ao músico) -->
+    <div class="filters-section">
+      <div class="filter-row">
+        <ion-searchbar
+          [(ngModel)]="filtroBusca"
+          (ionInput)="filtrarEventos()"
+          placeholder="Buscar evento, local, cidade..."
+          animated
+          clearInput>
+        </ion-searchbar>
+        
+        <div class="filter-buttons">
+          <ion-chip [outline]="filtroAtivo !== 'todos'" (click)="aplicarFiltro('todos')">
+            <ion-label>Todos ({{ eventos.length }})</ion-label>
+          </ion-chip>
+          
+          <ion-chip [outline]="filtroAtivo !== 'hoje'" (click)="aplicarFiltro('hoje')">
+            <ion-icon name="today-outline" color="primary"></ion-icon>
+            <ion-label>Hoje ({{ eventosHoje.length }})</ion-label>
+          </ion-chip>
+          
+          <ion-chip [outline]="filtroAtivo !== 'proximos7'" (click)="aplicarFiltro('proximos7')">
+            <ion-icon name="calendar-outline" color="warning"></ion-icon>
+            <ion-label>Próximos 7 Dias ({{ eventosProximos7Dias.length }})</ion-label>
+          </ion-chip>
+          
+          <ion-chip [outline]="filtroAtivo !== 'proximo-mes'" (click)="aplicarFiltro('proximo-mes')">
+            <ion-icon name="calendar-number-outline" color="success"></ion-icon>
+            <ion-label>Próximo Mês ({{ eventosProximoMes.length }})</ion-label>
+          </ion-chip>
+        </div>
+      </div>
+      
+      <div class="view-toggle">
+        <ion-segment [(ngModel)]="visualizacao" (ionChange)="alternarVisualizacao()">
+          <ion-segment-button value="calendario">
+            <ion-label>Calendário</ion-label>
+            <ion-icon name="calendar-outline"></ion-icon>
+          </ion-segment-button>
+          <ion-segment-button value="lista">
+            <ion-label>Lista</ion-label>
+            <ion-icon name="list-outline"></ion-icon>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+    </div>
+
+    <!-- Conteúdo principal da agenda (igual ao músico) -->
+    <div class="content-section">
+      <!-- Visualização em Calendário -->
+      <div class="calendar-view" *ngIf="visualizacao === 'calendario'">
+        <div class="calendar-header">
+          <ion-button fill="clear" (click)="mesAnterior()">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+          </ion-button>
+          
+          <div class="calendar-title">
+            <h2>{{ mesAtual }} {{ anoAtual }}</h2>
+          </div>
+          
+          <ion-button fill="clear" (click)="mesSeguinte()">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </ion-button>
+          
+          <ion-button fill="clear" (click)="irParaHoje()">
+            Hoje
+          </ion-button>
+        </div>
+        
+        <div class="calendar-grid">
+          <!-- Dias da semana -->
+          <div class="calendar-weekdays">
+            <div class="weekday">Dom</div>
+            <div class="weekday">Seg</div>
+            <div class="weekday">Ter</div>
+            <div class="weekday">Qua</div>
+            <div class="weekday">Qui</div>
+            <div class="weekday">Sex</div>
+            <div class="weekday">Sáb</div>
+          </div>
+          
+          <!-- Dias do mês -->
+          <div class="calendar-days">
+            <div *ngFor="let dia of diasDoMes" 
+                 class="calendar-day" 
+                 [class.empty]="!dia.data"
+                 [class.today]="dia.hoje"
+                 [class.has-event]="dia.temEvento"
+                 (click)="dia.temEvento ? verEventosDoDia(dia) : null">
+              
+              <div class="day-number">{{ dia.dia }}</div>
+              
+              <div class="day-events" *ngIf="dia.temEvento">
+                <div class="event-indicator" *ngFor="let evento of getEventosDoDia(dia.data) | slice:0:3">
+                  <div class="event-dot" [style.background-color]="getCorEvento(evento)"></div>
+                </div>
+                <div class="event-count" *ngIf="getEventosDoDia(dia.data).length > 3">
+                  +{{ getEventosDoDia(dia.data).length - 3 }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visualização em Lista -->
+      <div class="list-view" *ngIf="visualizacao === 'lista'">
+        <div class="events-section">
+          <div class="section-header">
+            <h2>{{ eventosFiltrados.length }} Evento(s)</h2>
+            <ion-select [(ngModel)]="ordenacao" (ionChange)="ordenarEventos()" interface="popover">
+              <ion-select-option value="data">Data (próximos primeiro)</ion-select-option>
+              <ion-select-option value="nome">Nome do Evento</ion-select-option>
+              <ion-select-option value="cidade">Cidade</ion-select-option>
+            </ion-select>
+          </div>
+
+          <div class="events-list">
+            <ion-item-sliding *ngFor="let evento of eventosFiltrados">
+              <ion-item [class.evento-hoje]="isEventoHoje(evento)" [class.evento-proximo]="isEventoProximo(evento)">
+                <div class="evento-item">
+                  <!-- Data do evento -->
+                  <div class="evento-data" [ngClass]="{'evento-hoje': isEventoHoje(evento), 'evento-proximo': isEventoProximo(evento)}">
+                    <div class="evento-dia">{{ getDiaMes(evento.dataEvento) }}</div>
+                    <div class="evento-mes">{{ getMesAbreviado(evento.dataEvento) }}</div>
+                    <div class="evento-dia-semana">{{ getDiaSemana(evento.dataEvento) }}</div>
+                  </div>
+                  
+                  <!-- Informações do evento -->
+                  <div class="evento-info">
+                    <h3>{{ evento.nomeEvento }}</h3>
+                    
+                    <div class="evento-detalhes">
+                      <div class="detalhe-item">
+                        <ion-icon name="time-outline"></ion-icon>
+                        <span>{{ evento.horario }}</span>
+                      </div>
+                      
+                      <div class="detalhe-item">
+                        <ion-icon name="location-outline"></ion-icon>
+                        <span>{{ evento.cidade }}, {{ evento.bairro }}</span>
+                      </div>
+                      
+                      <div class="detalhe-item">
+                        <ion-icon name="people-outline"></ion-icon>
+                        <span>{{ evento.quantidadeConvidados }} convidados</span>
+                      </div>
+                      
+                      <div class="detalhe-item">
+                        <ion-icon name="cash-outline"></ion-icon>
+                        <span>{{ getValorContrato(evento) }}</span>
+                      </div>
+                    </div>
+                    
+                    <div class="evento-status">
+                      <ion-badge [color]="getStatusCor(evento)">
+                        <ion-icon [name]="getStatusIcon(evento)" slot="start"></ion-icon>
+                        {{ getStatusTexto(evento) }}
+                      </ion-badge>
+                      
+                      <span class="evento-tipo">{{ evento.tipoEvento }}</span>
+                    </div>
+                  </div>
+                  
+                  <!-- Ações rápidas -->
+                  <div class="evento-actions">
+                    <ion-button fill="clear" size="small" (click)="verDetalhesEvento(evento)">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </ion-button>
+                  </div>
+                </div>
+              </ion-item>
+
+              <ion-item-options side="end">
+                <ion-item-option color="primary" (click)="verDetalhesEvento(evento)">
+                  <ion-icon name="eye-outline" slot="start"></ion-icon>
+                  Detalhes
+                </ion-item-option>
+              </ion-item-options>
+            </ion-item-sliding>
+          </div>
+
+          <!-- Estado vazio -->
+          <div class="empty-state" *ngIf="eventosFiltrados.length === 0 && !loading">
+            <ion-icon name="calendar-outline" class="empty-icon"></ion-icon>
+            <h3>Nenhum evento encontrado</h3>
+            <p *ngIf="filtroAtivo !== 'todos' || filtroBusca">
+              Não há eventos correspondentes aos filtros aplicados
+            </p>
+            <p *ngIf="filtroAtivo === 'todos' && !filtroBusca">
+              Não há eventos confirmados na agenda da banda
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de detalhes do evento (igual ao músico) -->
+  <div class="evento-details-modal" *ngIf="eventoSelecionado">
+    <div class="modal-backdrop" (click)="fecharDetalhes()"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>{{ eventoSelecionado.nomeEvento }}</h2>
+        <ion-button fill="clear" (click)="fecharDetalhes()">
+          <ion-icon name="close-outline"></ion-icon>
+        </ion-button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="evento-info-detalhada">
+          <div class="info-section">
+            <h3><ion-icon name="calendar-outline"></ion-icon> Data e Hora</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Data:</span>
+                <span class="info-value">{{ formatarDataCompleta(eventoSelecionado.dataEvento) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Horário:</span>
+                <span class="info-value">{{ eventoSelecionado.horario }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Dias restantes:</span>
+                <span class="info-value">{{ getDiasRestantes(eventoSelecionado) }} dias</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-section">
+            <h3><ion-icon name="location-outline"></ion-icon> Local</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Endereço:</span>
+                <span class="info-value">{{ eventoSelecionado.rua }}, {{ eventoSelecionado.numero }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Bairro:</span>
+                <span class="info-value">{{ eventoSelecionado.bairro }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Cidade/Estado:</span>
+                <span class="info-value">{{ eventoSelecionado.cidade }} / {{ eventoSelecionado.estado }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-section">
+            <h3><ion-icon name="information-circle-outline"></ion-icon> Detalhes</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Tipo:</span>
+                <span class="info-value">{{ eventoSelecionado.tipoEvento }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Convidados:</span>
+                <span class="info-value">{{ eventoSelecionado.quantidadeConvidados }} pessoas</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Sonorização:</span>
+                <span class="info-value">{{ eventoSelecionado.sonorizacao ? 'Sim' : 'Não' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Valor do Contrato:</span>
+                <span class="info-value">{{ getValorContrato(eventoSelecionado) }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-section">
+            <h3><ion-icon name="people-outline"></ion-icon> Contratante</h3>
+            <div class="contratante-info">
+              <ion-avatar>
+                <ion-icon name="person-circle-outline"></ion-icon>
+              </ion-avatar>
+              <div class="contratante-detalhes">
+                <h4>{{ getNomeContratante(eventoSelecionado.idUsuario) }}</h4>
+                <p>{{ getEmailContratante(eventoSelecionado.idUsuario) }}</p>
+                <p>{{ getTelefoneContratante(eventoSelecionado.idUsuario) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <ion-button expand="block" color="medium" fill="outline" (click)="fecharDetalhes()">
+          Fechar
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="loading-content">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>Carregando dashboard...</p>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,166 @@
+ion-menu {
+  --background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 25%, #6a11cb 66%, #2575fc 100%);
+  --ion-background-color: transparent;
+}
+
+ion-header {
+  ion-toolbar {
+    --background: rgba(255, 255, 255, 0.1);
+    --ion-color-base: transparent !important;
+    --border-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    ion-title {
+      color: white;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      font-size: 1.4rem;
+    }
+  }
+}
+
+ion-content {
+  --background: transparent;
+  --ion-background-color: transparent;
+}
+
+ion-list {
+  background: transparent;
+  padding: 16px 0;
+}
+
+ion-item {
+  --background: rgba(255, 255, 255, 0.15);
+  --background-hover: rgba(255, 255, 255, 0.25);
+  --background-activated: rgba(255, 255, 255, 0.3);
+  --background-focused: rgba(255, 255, 255, 0.25);
+  
+  --color: white;
+  --color-hover: white;
+  --color-activated: white;
+  --color-focused: white;
+  
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-radius: 12px;
+  --border-width: 1px;
+  --border-style: solid;
+  
+  --detail-icon-color: white;
+  --detail-icon-opacity: 0.8;
+  
+  margin: 8px 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateX(5px);
+    --background: rgba(255, 255, 255, 0.25);
+  }
+  
+  &.item-interactive.ion-activated {
+    --background: rgba(255, 255, 255, 0.3);
+    transform: translateX(8px);
+  }
+}
+
+ion-icon {
+  color: white;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+  font-size: 1.4rem;
+}
+
+ion-label {
+  color: white;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  font-size: 1.1rem;
+  margin-left: 8px;
+}
+
+ion-menu-toggle {
+  ion-item {
+    --ripple-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+// Efeito de partículas sutis no fundo
+ion-menu::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(255, 126, 95, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 60%, rgba(106, 17, 203, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 70%, rgba(254, 180, 123, 0.3) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+// Animações sutis
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+ion-menu {
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  ion-item {
+    margin: 6px 12px;
+    --border-radius: 10px;
+  }
+  
+  ion-label {
+    font-size: 1rem;
+  }
+  
+  ion-icon {
+    font-size: 1.2rem;
+  }
+}
+
+// Efeito de brilho nos itens
+ion-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.3) 20%, 
+    rgba(255, 255, 255, 0.6) 50%, 
+    rgba(255, 255, 255, 0.3) 80%, 
+    transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+ion-item:hover::after {
+  opacity: 1;
+}
+
+// Sombra no menu
+ion-menu {
+  box-shadow: 
+    0 0 40px rgba(255, 126, 95, 0.3),
+    0 0 80px rgba(106, 17, 203, 0.2),
+    inset 0 0 60px rgba(255, 255, 255, 0.05);
+}

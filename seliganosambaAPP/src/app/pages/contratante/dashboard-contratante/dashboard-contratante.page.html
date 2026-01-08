@@ -1,0 +1,235 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    
+    <ion-title>Dashboard Contratante</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()" fill="clear">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        Sair
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Cabeçalho com saudação -->
+  <div class="welcome-section">
+    <div class="welcome-content">
+      <h1>Olá, {{ usuario?.nome }}! 👋</h1>
+      <p>Bem-vindo ao seu painel de eventos do Se Liga No Samba</p>
+    </div>
+    <div class="user-info">
+      <ion-avatar>
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-avatar>
+      <div class="user-details">
+        <span class="user-name">{{ usuario?.nome }}</span>
+        <span class="user-role">{{ usuario?.funcao }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estatísticas pessoais -->
+  <div class="stats-section">
+    <h2>Minhas Estatísticas</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon primary">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ estatisticas.totalAgendamentos }}</h3>
+          <p>Meus Eventos</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon secondary">
+          <ion-icon name="document-text-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ estatisticas.totalContratos }}</h3>
+          <p>Contratos</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon success">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ estatisticas.agendamentosAprovados }}</h3>
+          <p>Aprovados</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon warning">
+          <ion-icon name="time-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ estatisticas.agendamentosPendentes }}</h3>
+          <p>Pendentes</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Próximos eventos -->
+  <div class="upcoming-section" *ngIf="proximosEventos.length > 0">
+    <div class="section-header">
+      <h2>Próximos Eventos</h2>
+      <ion-button fill="clear" size="small" routerLink="/contratante/agendamentos">
+        Ver todos
+        <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+      </ion-button>
+    </div>
+    
+    <div class="upcoming-list">
+      <div class="evento-card" *ngFor="let evento of proximosEventos">
+        <div class="evento-header">
+          <div class="evento-data">
+            <div class="evento-dia">{{ getDiaMes(evento.dataEvento) }}</div>
+            <div class="evento-mes">{{ getMes(evento.dataEvento) }}</div>
+          </div>
+          
+          <div class="evento-info">
+            <h3>{{ evento.nomeEvento }}</h3>
+            <p class="evento-horario">
+              <ion-icon name="time-outline"></ion-icon>
+              {{ evento.horario }}
+            </p>
+            <p class="evento-local">
+              <ion-icon name="location-outline"></ion-icon>
+              {{ evento.cidade }}, {{ evento.bairro }}
+            </p>
+          </div>
+          
+          <div class="evento-status">
+            <ion-badge [color]="evento.aprovado ? 'success' : 'warning'">
+              {{ evento.aprovado ? 'Aprovado' : 'Pendente' }}
+            </ion-badge>
+          </div>
+        </div>
+        
+        <div class="evento-actions">
+          <ion-button fill="clear" size="small" (click)="verDetalhesEvento(evento)">
+            <ion-icon name="eye-outline" slot="start"></ion-icon>
+            Detalhes
+          </ion-button>
+          
+          <ion-button fill="clear" size="small" color="primary" 
+                     *ngIf="evento.aprovado" 
+                     routerLink="/contratante/contratos">
+            <ion-icon name="document-text-outline" slot="start"></ion-icon>
+            Contrato
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu de funcionalidades -->
+  <div class="features-section">
+    <h2>Minhas Funcionalidades</h2>
+    <div class="features-grid">
+      <div class="feature-card" routerLink="/contratante/solicitar-orcamento">
+        <div class="feature-icon primary">
+          <ion-icon name="add-circle-outline"></ion-icon>
+        </div>
+        <div class="feature-content">
+          <h3>Solicitar Orçamento</h3>
+          <p>Solicite um orçamento para seu evento</p>
+        </div>
+        <div class="feature-arrow">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+      </div>
+      
+      <div class="feature-card" routerLink="/contratante/contratos">
+        <div class="feature-icon secondary">
+          <ion-icon name="document-text-outline"></ion-icon>
+        </div>
+        <div class="feature-content">
+          <h3>Meus Contratos</h3>
+          <p>Visualize e gerencie seus contratos</p>
+          <div class="feature-badge" *ngIf="estatisticas.totalContratos > 0">
+            <span>{{ estatisticas.totalContratos }}</span>
+          </div>
+        </div>
+        <div class="feature-arrow">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+      </div>
+    
+      
+      <div class="feature-card" routerLink="/contratante/perfil">
+        <div class="feature-icon warning">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+        <div class="feature-content">
+          <h3>Meu Perfil</h3>
+          <p>Atualize seus dados pessoais</p>
+        </div>
+        <div class="feature-arrow">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contratos pendentes -->
+  <div class="pending-section" *ngIf="contratosPendentes.length > 0">
+    <div class="section-header">
+      <h2>Contratos Pendentes</h2>
+      <ion-button fill="clear" size="small" routerLink="/contratante/contratos">
+        Ver todos
+        <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+      </ion-button>
+    </div>
+    
+    <div class="pending-list">
+      <div class="contrato-pendente-card" *ngFor="let contrato of contratosPendentes">
+        <div class="contrato-info">
+          <h3>Contrato #{{ contrato.idContrato }}</h3>
+          <p>{{ getNomeEvento(contrato.idAgendamento) }}</p>
+          <p class="contrato-valor">{{ formatarValor(contrato.valor) }}</p>
+        </div>
+        
+        <div class="contrato-actions">
+          <ion-button fill="outline" size="small" (click)="assinarContrato(contrato)">
+            <ion-icon name="pencil-outline" slot="start"></ion-icon>
+            Assinar Agora
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Atividades recentes -->
+  <div class="recent-section">
+    <div class="section-header">
+      <h2>Minhas Atividades</h2>
+      <ion-button fill="clear" size="small" (click)="verAtividades()">
+        Ver todas
+        <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+      </ion-button>
+    </div>
+    
+    <div class="activity-list">
+      <div class="activity-item" *ngFor="let atividade of atividadesRecentes">
+        <div class="activity-icon" [ngClass]="atividade.tipo">
+          <ion-icon [name]="atividade.icone"></ion-icon>
+        </div>
+        <div class="activity-content">
+          <p>{{ atividade.descricao }}</p>
+          <span class="activity-time">{{ atividade.tempo }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

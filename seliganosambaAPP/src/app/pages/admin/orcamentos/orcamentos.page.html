@@ -1,0 +1,206 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/dashboard"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title>Orçamentos</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="exportarRelatorio()" fill="clear">
+        <ion-icon name="download-outline" slot="start"></ion-icon>
+        Exportar
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Barra de pesquisa e filtros -->
+  <div class="filter-section">
+    <div class="filter-row">
+      <div class="search-container">
+        <ion-searchbar
+          [(ngModel)]="filtro"
+          (ionChange)="filtrarOrcamentos()"
+          placeholder="Buscar por evento, cliente, local...">
+        </ion-searchbar>
+      </div>
+      
+      <div class="filters-container">
+        <ion-chip (click)="alternarFiltro('todos')" [outline]="filtroStatus !== 'todos'">
+          <ion-icon name="apps-outline" color="primary"></ion-icon>
+          <ion-label>Todos ({{ orcamentos.length }})</ion-label>
+        </ion-chip>
+        
+        <ion-chip (click)="alternarFiltro('nao-aprovados')" [outline]="filtroStatus !== 'nao-aprovados'">
+          <ion-icon name="time-outline" color="warning"></ion-icon>
+          <ion-label>Não Aprovados ({{ orcamentosNaoAprovados.length }})</ion-label>
+        </ion-chip>
+        
+        <ion-chip (click)="alternarFiltro('aprovados')" [outline]="filtroStatus !== 'aprovados'">
+          <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+          <ion-label>Aprovados ({{ orcamentosAprovados.length }})</ion-label>
+        </ion-chip>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards de estatísticas -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon primary">
+          <ion-icon name="document-text-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ orcamentos.length }}</h3>
+          <p>Total de Orçamentos</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon warning">
+          <ion-icon name="time-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ orcamentosNaoAprovados.length }}</h3>
+          <p>Não Aprovados</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon success">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ orcamentosAprovados.length }}</h3>
+          <p>Aprovados</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon danger">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ orcamentosExpirados.length }}</h3>
+          <p>Expirados</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de orçamentos -->
+  <div class="orcamentos-section">
+    <div class="section-header">
+      <h2>{{ orcamentosFiltrados.length }} orçamento(s)</h2>
+      <div class="section-actions">
+        <ion-button fill="clear" size="small" (click)="limparExpirados()" 
+                    *ngIf="orcamentosExpirados.length > 0" color="danger">
+          <ion-icon name="trash-outline" slot="start"></ion-icon>
+          Limpar Expirados
+        </ion-button>
+        
+        <ion-button fill="clear" size="small" (click)="aprovarTodos()" 
+                    *ngIf="orcamentosNaoAprovados.length > 0">
+          <ion-icon name="checkmark-done-outline" slot="start"></ion-icon>
+          Aprovar Todos
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Lista de orçamentos -->
+    <div class="orcamentos-list">
+      <ion-item-sliding *ngFor="let orcamento of orcamentosFiltrados">
+        <ion-item [class.aprovado]="orcamento.aprovado === true" 
+                  [class.nao-aprovado]="orcamento.aprovado === false || orcamento.aprovado === null"
+                  [class.expirado]="isExpirado(orcamento.dataEvento)">
+          <div class="orcamento-item">
+            <div class="orcamento-status" [ngClass]="getStatusClass(orcamento.aprovado, orcamento.dataEvento)">
+              <ion-icon [name]="getStatusIcon(orcamento.aprovado, orcamento.dataEvento)"></ion-icon>
+              <span>{{ getStatusTexto(orcamento.aprovado, orcamento.dataEvento) }}</span>
+            </div>
+            
+            <div class="orcamento-info">
+              <div class="orcamento-header">
+                <h3>{{ orcamento.nomeEvento }}</h3>
+                <span class="orcamento-valor">{{ formatarValor(orcamento.orcamento) }}</span>
+              </div>
+              
+              <div class="orcamento-detalhes">
+                <div class="detalhe-item">
+                  <ion-icon name="calendar-outline"></ion-icon>
+                  <span>{{ formatarData(orcamento.dataEvento) }} - {{ orcamento.horario }}</span>
+                  <span class="badge-expirado" *ngIf="isExpirado(orcamento.dataEvento)">EXPIROU</span>
+                </div>
+                
+                <div class="detalhe-item">
+                  <ion-icon name="location-outline"></ion-icon>
+                  <span>{{ orcamento.cidade }}, {{ orcamento.bairro }}</span>
+                </div>
+                
+                <div class="detalhe-item">
+                  <ion-icon name="people-outline"></ion-icon>
+                  <span>{{ orcamento.quantidadeConvidados }} convidados</span>
+                </div>
+                
+                <div class="detalhe-item">
+                  <ion-icon name="pricetags-outline"></ion-icon>
+                  <span>{{ orcamento.tipoEvento }}</span>
+                </div>
+              </div>
+              
+              <div class="orcamento-cliente">
+                <p><strong>Solicitante:</strong> ID {{ orcamento.idUsuario }}</p>
+                <p *ngIf="orcamento.dataCriacao">
+                  <strong>Solicitado em:</strong> {{ formatarDataHora(orcamento.dataCriacao) }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <!-- BOTÃO EDITAR - ADICIONADO AQUI -->
+          <ion-item-option color="primary" (click)="editarOrcamento(orcamento)">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            Editar
+          </ion-item-option>
+          
+          <!-- Botão Aprovar - apenas para não aprovados -->
+          <ion-item-option color="success" (click)="aprovarOrcamento(orcamento)" 
+                          *ngIf="orcamento.aprovado !== true">
+            <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+            Aprovar
+          </ion-item-option>
+          
+          <!-- Botão Reprovar - apenas para aprovados -->
+          <ion-item-option color="warning" (click)="reprovarOrcamento(orcamento)"
+                          *ngIf="orcamento.aprovado === true">
+            <ion-icon name="close-outline" slot="start"></ion-icon>
+            Reprovar
+          </ion-item-option>
+          
+          <!-- Botão Excluir - sempre visível -->
+          <ion-item-option color="danger" (click)="confirmarExclusao(orcamento)">
+            <ion-icon name="trash-outline" slot="start"></ion-icon>
+            Excluir
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </div>
+
+    <!-- Estado vazio -->
+    <div class="empty-state" *ngIf="orcamentosFiltrados.length === 0 && !loading">
+      <ion-icon name="document-text-outline" class="empty-icon"></ion-icon>
+      <h3>Nenhum orçamento encontrado</h3>
+      <p *ngIf="filtro || filtroStatus !== 'todos'">
+        Não há orçamentos correspondentes aos filtros aplicados
+      </p>
+      <p *ngIf="!filtro && filtroStatus === 'todos'">
+        Não há orçamentos cadastrados
+      </p>
+    </div>
+  </div>
+</ion-content>

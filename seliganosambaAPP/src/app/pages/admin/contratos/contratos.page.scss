@@ -1,0 +1,346 @@
+.filter-section {
+  padding: 15px 15px 0;
+  background: #f8f9fa;
+  
+  ion-segment {
+    --background: white;
+    
+    ion-segment-button {
+      --color: var(--ion-color-medium);
+      --color-checked: white;
+      --indicator-color: var(--ion-color-primary);
+      font-size: 0.8rem;
+      
+      &:nth-child(2) { // Pendentes
+        --color-checked: white;
+        --indicator-color: var(--ion-color-danger);
+      }
+      
+      &:nth-child(3) { // Assinados
+        --color-checked: white;
+        --indicator-color: var(--ion-color-success);
+      }
+      
+      &:nth-child(4) { // Parciais
+        --color-checked: white;
+        --indicator-color: var(--ion-color-warning);
+      }
+    }
+  }
+}
+
+.search-section {
+  padding: 15px;
+  background: #f8f9fa;
+}
+
+.loading-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  
+  ion-spinner {
+    margin-bottom: 15px;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+  }
+}
+
+.stats-section {
+  padding: 15px;
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+  .stat-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    ion-icon {
+      font-size: 1.8rem;
+      color: white;
+    }
+    
+    .total & {
+      background: var(--ion-color-primary);
+    }
+    
+    .assinados & {
+      background: var(--ion-color-success);
+    }
+    
+    .pendentes & {
+      background: var(--ion-color-danger);
+    }
+    
+    .parciais & {
+      background: var(--ion-color-warning);
+    }
+  }
+  
+  .stat-content {
+    h3 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--ion-color-dark);
+    }
+    
+    p {
+      margin: 5px 0 0 0;
+      color: var(--ion-color-medium);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+  }
+}
+
+.contratos-section {
+  padding: 15px;
+}
+
+.section-header {
+  margin-bottom: 20px;
+  
+  h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--ion-color-dark);
+    font-weight: 600;
+  }
+}
+
+.contratos-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.contrato-card {
+  margin: 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.card-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  
+  ion-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  
+  ion-card-subtitle {
+    font-size: 0.85rem;
+    color: var(--ion-color-medium);
+  }
+  
+  .status-badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 20px;
+  }
+}
+
+.contrato-info {
+  .info-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--ion-color-light);
+    
+    &:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+  }
+  
+  .info-icon {
+    font-size: 1.2rem;
+    color: var(--ion-color-primary);
+    min-width: 24px;
+  }
+  
+  .info-content {
+    flex: 1;
+  }
+  
+  .info-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--ion-color-medium);
+    margin-bottom: 3px;
+  }
+  
+  .info-value {
+    display: block;
+    font-size: 1rem;
+    color: var(--ion-color-dark);
+    font-weight: 500;
+  }
+}
+
+.assinaturas-status {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  
+  .assinatura-badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    
+    ion-icon {
+      font-size: 0.8rem;
+      margin-right: 3px;
+    }
+  }
+}
+
+.card-actions {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--ion-color-light);
+  
+  ion-button[expand="block"] {
+    margin-bottom: 10px;
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+    
+    ion-button {
+      --padding-start: 8px;
+      --padding-end: 8px;
+      min-height: 36px;
+      
+      ion-icon {
+        font-size: 1.2rem;
+      }
+    }
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  
+  .empty-icon {
+    font-size: 4rem;
+    color: var(--ion-color-medium);
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+  
+  h3 {
+    margin: 0 0 10px 0;
+    color: var(--ion-color-dark);
+    font-size: 1.3rem;
+  }
+  
+  p {
+    margin: 0 0 20px 0;
+    color: var(--ion-color-medium);
+    max-width: 400px;
+    line-height: 1.5;
+  }
+}
+
+// Responsividade
+@media (max-width: 767px) {
+  .filter-section {
+    ion-segment {
+      overflow-x: auto;
+      display: flex;
+      flex-wrap: nowrap;
+      
+      ion-segment-button {
+        min-width: auto;
+        font-size: 0.75rem;
+        padding: 0 5px;
+      }
+    }
+  }
+  
+  .contratos-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card-actions {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--ion-color-light);
+  
+  ion-button[expand="block"] {
+    margin-bottom: 10px;
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+    
+    ion-button {
+      --padding-start: 8px;
+      --padding-end: 8px;
+      min-height: 36px;
+      
+      ion-icon {
+        font-size: 1.2rem;
+      }
+    }
+  }
+}

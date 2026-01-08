@@ -1,0 +1,362 @@
+.perfil-container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.perfil-header {
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
+  border-radius: 20px;
+  padding: 30px;
+  color: white;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.avatar-section {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 30px;
+  
+  .avatar-container {
+    position: relative;
+    
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      ion-icon {
+        font-size: 5rem;
+        color: white;
+      }
+    }
+    
+    .avatar-edit-btn {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: var(--ion-color-light);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      
+      ion-icon {
+        font-size: 1.5rem;
+        color: var(--ion-color-primary);
+      }
+    }
+  }
+  
+  .user-basic-info {
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    
+    .user-email {
+      margin: 0 0 5px 0;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    .user-role {
+      margin: 0;
+      font-size: 1rem;
+      opacity: 0.8;
+      font-weight: 500;
+    }
+  }
+}
+
+.stats-badges {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    font-size: 0.95rem;
+    
+    ion-icon {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+.form-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.form-section {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--ion-color-light);
+    
+    h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: var(--ion-color-dark);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      
+      ion-icon {
+        font-size: 1.5rem;
+        color: var(--ion-color-primary);
+      }
+    }
+  }
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    font-size: 0.95rem;
+    
+    .required {
+      color: var(--ion-color-danger);
+    }
+  }
+  
+  ion-input {
+    --background: var(--ion-color-light);
+    --padding-start: 15px;
+    --padding-end: 15px;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    border-radius: 10px;
+    font-size: 1rem;
+    
+    &:hover, &:focus {
+      --background: var(--ion-color-light-shade);
+    }
+  }
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  
+  .form-group {
+    flex: 1;
+  }
+}
+
+.error-message {
+  color: var(--ion-color-danger);
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+}
+
+.senha-requirements {
+  background: var(--ion-color-light);
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 10px;
+  
+  p {
+    margin: 0 0 10px 0;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+  
+  ul {
+    margin: 0;
+    padding-left: 20px;
+    
+    li {
+      margin-bottom: 5px;
+      color: var(--ion-color-medium);
+      font-size: 0.9rem;
+      
+      &.valid {
+        color: var(--ion-color-success);
+        
+        &::before {
+          content: '✓ ';
+          font-weight: bold;
+        }
+      }
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  
+  .info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--ion-color-light);
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    .info-label {
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+    
+    .info-value {
+      color: var(--ion-color-medium);
+      
+      &.status-ativo {
+        color: var(--ion-color-success);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: 600;
+        
+        ion-icon {
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+}
+
+.account-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  
+  ion-button {
+    --border-radius: 10px;
+    --padding-top: 15px;
+    --padding-bottom: 15px;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  
+  ion-button {
+    flex: 1;
+    --border-radius: 10px;
+    --padding-top: 20px;
+    --padding-bottom: 20px;
+    font-weight: 600;
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .perfil-header {
+    padding: 20px;
+  }
+  
+  .avatar-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+    
+    .user-basic-info {
+      text-align: center;
+    }
+  }
+  
+  .stats-badges {
+    justify-content: center;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .form-section {
+    padding: 20px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 576px) {
+  .perfil-container {
+    padding: 15px;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .stats-badges {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+// Dark mode
+@media (prefers-color-scheme: dark) {
+  .form-section {
+    background: var(--ion-color-step-50);
+  }
+  
+  .section-header h2 {
+    color: white;
+  }
+  
+  .form-group label {
+    color: white;
+  }
+  
+  .account-info .info-label {
+    color: white;
+  }
+  
+  .senha-requirements {
+    background: var(--ion-color-step-100);
+    
+    p {
+      color: white;
+    }
+  }
+}

@@ -1,0 +1,92 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/dashboard"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title>Gerenciar Ensaios</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="novoEnsaio()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Novo
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Filtros e busca -->
+  <div class="filters-section">
+    <ion-searchbar 
+      placeholder="Buscar por local ou data..."
+      (ionInput)="filtrarEnsaios($event)"
+      animated
+      clear-input
+    ></ion-searchbar>
+    
+    <div class="filter-options">
+      <ion-segment [(ngModel)]="filtroAtivo" (ionChange)="aplicarFiltros()">
+        <ion-segment-button value="todos">
+          <ion-label>Todos</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="hoje">
+          <ion-label>Hoje</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="futuros">
+          <ion-label>Futuros</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="passados">
+          <ion-label>Passados</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+  </div>
+
+  <!-- Lista de ensaios -->
+  <ion-list lines="full">
+    <ion-item-sliding *ngFor="let ensaio of ensaiosFiltrados">
+      <ion-item (click)="editarEnsaio(ensaio)">
+        <ion-icon 
+          slot="start" 
+          name="calendar-outline"
+          [color]="getCorStatus(ensaio.dtEnsaio)"
+        ></ion-icon>
+        
+        <ion-label>
+          <h2>{{ ensaio.local }}</h2>
+          <p>
+            <ion-icon name="calendar-outline" size="small"></ion-icon>
+            {{ formatarData(ensaio.dtEnsaio) }} 
+            <ion-icon name="time-outline" size="small"></ion-icon>
+            {{ ensaio.horario }}
+          </p>
+        </ion-label>
+        
+        <ion-badge [color]="getCorStatus(ensaio.dtEnsaio)" slot="end">
+          {{ getStatusTexto(ensaio.dtEnsaio) }}
+        </ion-badge>
+      </ion-item>
+      
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="editarEnsaio(ensaio)">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="confirmarExclusao(ensaio)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <!-- Mensagem quando não há ensaios -->
+  <div *ngIf="ensaios.length === 0" class="empty-state">
+    <ion-icon name="calendar-outline" size="large"></ion-icon>
+    <h3>Nenhum ensaio cadastrado</h3>
+    <p>Clique no botão "Novo" para cadastrar seu primeiro ensaio</p>
+    <ion-button (click)="novoEnsaio()" fill="solid">
+      <ion-icon name="add-outline" slot="start"></ion-icon>
+      Novo Ensaio
+    </ion-button>
+  </div>
+</ion-content>
